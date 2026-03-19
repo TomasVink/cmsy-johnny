@@ -33,8 +33,21 @@ export function useLivePreview<T extends Record<string, unknown>>(
 ) {
   const { initialData, serverURL = 'http://localhost:3000' } = options
 
+  // Normalize to a bare origin (strips trailing slash, paths, etc.) so that
+  // postMessage targetOrigin and event.origin comparisons work correctly.
+  // e.g. "http://localhost:3000/" → "http://localhost:3000"
+  const origin = (() => {
+    try {
+      return new URL(serverURL).origin
+    } catch {
+      return serverURL
+    }
+  })()
+
   let data = $state<T>(initialData)
-  let isLoading = $state(false)
+  // Start as true — Payload sends the first update after receiving the ready
+  // signal, so we show a loading state until that first message arrives.
+  let isLoading = $state(true)
 
   $effect(() => {
     if (typeof window === 'undefined') return
@@ -42,7 +55,7 @@ export function useLivePreview<T extends Record<string, unknown>>(
     function handleMessage(event: MessageEvent) {
       // Only accept messages from the configured Payload origin.
       // This is a critical security check — do not remove.
-      if (event.origin !== serverURL) return
+      if (event.origin !== origin) return
 
       const message = event.data as { type: string; data: T }
       if (message?.type !== 'payload-live-preview') return
@@ -55,8 +68,13 @@ export function useLivePreview<T extends Record<string, unknown>>(
 
     // Signal to Payload's admin panel that this iframe is ready.
     // Payload waits for this before sending the first preview update.
+    // Must be { type: 'payload-live-preview', ready: true } — Payload checks
+    // event.data.type and event.data.ready, not a plain string message.
     if (window.parent !== window) {
-      window.parent.postMessage('payload-live-preview-ready', serverURL)
+      window.parent.postMessage({ type: 'payload-live-preview', ready: true }, origin)
+    } else {
+      // Not in an iframe — no live preview, show content immediately.
+      isLoading = false
     }
 
     return () => {

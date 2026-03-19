@@ -29,6 +29,7 @@ export default buildConfig({
       },
     },
     livePreview: {
+      collections: ['pages'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 812 },
         { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
