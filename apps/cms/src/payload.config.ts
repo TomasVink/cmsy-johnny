@@ -71,7 +71,8 @@ export default buildConfig({
     outputFile: path.resolve(dirname, '../../../packages/payload-types/src/index.ts'),
   },
 
-  sharp,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sharp: sharp as any,
 
   secret: process.env.PAYLOAD_SECRET || '',
 })

@@ -17,7 +17,7 @@
 
   function renderLexical(content: Page["content"]): string {
     if (!content?.root) return "";
-    return renderNode(content.root as LexicalNode);
+    return renderNode(content.root as unknown as LexicalNode);
   }
 
   type LexicalNode = {

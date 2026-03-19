@@ -8,6 +8,7 @@
     "dev": "docker compose up -d --wait && turbo dev watch:types",
     "build": "turbo build",
     "generate:types": "turbo generate:types",
+    "check": "turbo check",
     "lint": "turbo lint",
     "payload": "bun --filter=@repo/cms payload"
   },

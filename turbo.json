@@ -19,6 +19,9 @@
       "cache": false,
       "outputs": ["../../packages/payload-types/src/index.ts"]
     },
+    "check": {
+      "dependsOn": ["^build"]
+    },
     "lint": {
       "dependsOn": ["^build"]
     }

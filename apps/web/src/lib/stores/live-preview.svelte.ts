@@ -28,7 +28,7 @@ export type LivePreviewOptions<T> = {
  * Creates a reactive live preview state using Svelte 5 runes.
  * Must be called at component initialisation time (top-level in <script>).
  */
-export function useLivePreview<T extends Record<string, unknown>>(
+export function useLivePreview<T extends object>(
   options: LivePreviewOptions<T>,
 ) {
   const { initialData, serverURL = 'http://localhost:3000' } = options
