@@ -1,0 +1,17 @@
+{
+  "name": "sveltekit-payload-starter",
+  "private": true,
+  "version": "0.0.1",
+  "packageManager": "bun@1.3.10",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "docker compose up -d --wait && turbo dev watch:types",
+    "build": "turbo build",
+    "generate:types": "turbo generate:types",
+    "lint": "turbo lint",
+    "payload": "bun --filter=@repo/cms payload"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  }
+}
