@@ -25,9 +25,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
+# Set here to avoid cross-env (which requires node) — matches the build script's values
+ENV NODE_OPTIONS="--no-deprecation --max-old-space-size=8000"
 
 WORKDIR /app/apps/cms
-RUN bun --bun run build
+RUN bunx --bun next build
 
 # ── Runtime ───────────────────────────────────────────────────────────────────
 # Use Node (not Bun) to run the Next.js standalone server
