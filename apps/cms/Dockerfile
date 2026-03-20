@@ -9,7 +9,7 @@ FROM base AS deps
 WORKDIR /app
 
 # Copy workspace manifests so Bun can resolve the full dependency graph
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 COPY apps/cms/package.json ./apps/cms/
 COPY packages/payload-types/package.json ./packages/payload-types/
 
