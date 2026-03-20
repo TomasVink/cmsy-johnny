@@ -1,7 +1,7 @@
 # Build context must be the monorepo root:
 #   docker build -f apps/web/Dockerfile .
 
-FROM oven/bun:1.3.10-alpine AS base
+FROM oven/bun:1.3.11-alpine AS base
 
 # ── Install dependencies ───────────────────────────────────────────────────────
 FROM base AS deps
@@ -13,7 +13,7 @@ COPY apps/web/package.json ./apps/web/
 COPY apps/cms/package.json ./apps/cms/
 COPY packages/payload-types/package.json ./packages/payload-types/
 
-RUN bun install --frozen-lockfile
+RUN bun install
 
 # ── Build ──────────────────────────────────────────────────────────────────────
 FROM base AS builder

@@ -17,11 +17,9 @@ const nextConfig = {
     return webpackConfig
   },
   output: 'standalone',
-  experimental: {
-    // Required for Next.js standalone to include monorepo workspace packages.
-    // With this set, server.js lives at apps/cms/server.js inside .next/standalone.
-    outputFileTracingRoot: path.join(__dirname, '../../'),
-  },
+  // Required for Next.js standalone to include monorepo workspace packages.
+  // With this set, server.js lives at apps/cms/server.js inside .next/standalone.
+  outputFileTracingRoot: path.join(__dirname, '../../'),
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
