@@ -26,6 +26,15 @@ WORKDIR /app/apps/cms
 RUN --mount=type=cache,target=/app/apps/cms/.next/cache \
     ./node_modules/.bin/next build
 
+# Compile migration TS files to self-contained JS bundles.
+# The standalone runtime can't import TS, and @payloadcms/db-postgres may not
+# be resolvable from the migrations directory — bundling makes them standalone.
+RUN for f in src/migrations/[0-9]*.ts; do \
+      [ -f "$f" ] || continue; \
+      name=$(basename "$f" .ts); \
+      bun build "$f" --outfile "src/migrations-compiled/${name}.js" --target node; \
+    done
+
 # ── Runtime ───────────────────────────────────────────────────────────────────
 # Run with Bun — the standalone output uses bun's .bun/ node_modules format
 # which Node.js can't resolve but Bun can.
@@ -40,7 +49,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=builder /app/apps/cms/.next/standalone ./
 COPY --from=builder /app/apps/cms/.next/static ./apps/cms/.next/static
 COPY --from=builder /app/apps/cms/public ./apps/cms/public
-COPY --from=builder /app/apps/cms/src/migrations ./apps/cms/src/migrations
+COPY --from=builder /app/apps/cms/src/migrations-compiled ./apps/cms/src/migrations
 
 EXPOSE 3000
 ENV PORT=3000

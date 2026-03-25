@@ -7,7 +7,9 @@
  * pipeline. Migrations are idempotent — already-applied ones are skipped.
  */
 export async function register() {
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
+  // Only run in production and in the Node.js runtime — not in Edge or during the build.
+  // In development, run migrations manually via `bun run payload migrate`.
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_RUNTIME === 'nodejs') {
     const { getPayload } = await import('payload')
     const { default: config } = await import('@payload-config')
 
