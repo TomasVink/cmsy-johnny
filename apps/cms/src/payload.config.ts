@@ -52,7 +52,11 @@ export default buildConfig({
   plugins: useS3
     ? [
         s3Storage({
-          collections: { media: true },
+          collections: {
+            media: {
+              prefix: process.env.NEXT_PUBLIC_PROJECT_SLUG,
+            },
+          },
           bucket: process.env.S3_BUCKET!,
           config: {
             credentials: {
@@ -60,8 +64,6 @@ export default buildConfig({
               secretAccessKey: process.env.S3_SECRET_KEY!,
             },
             region: process.env.S3_REGION || 'auto',
-            // Required for R2, MinIO, Backblaze B2, etc. Omit for standard AWS S3.
-            endpoint: process.env.S3_ENDPOINT,
           },
         }),
       ]
