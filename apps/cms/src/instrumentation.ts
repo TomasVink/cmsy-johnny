@@ -15,7 +15,7 @@ export async function register() {
     try {
       await payload.db.migrate()
     } catch (err) {
-      payload.logger.error({ err }, 'Database migration failed — server will not start')
+      console.error('Database migration failed:', err instanceof Error ? err.stack : String(err))
       process.exit(1)
     }
   }
