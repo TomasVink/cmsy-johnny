@@ -1,4 +1,13 @@
 import type { CollectionConfig } from 'payload'
+import { HeroBlock } from '../blocks/Hero'
+import { IngredientsBlock } from '../blocks/Ingredients'
+import { PhotoStripBlock } from '../blocks/PhotoStrip'
+import { StatementBannerBlock } from '../blocks/StatementBanner'
+import { LocationsBlock } from '../blocks/Locations'
+import { SignupBlock } from '../blocks/Signup'
+import { SocialBlock } from '../blocks/Social'
+import { TickerBannerBlock } from '../blocks/TickerBanner'
+import { CheckerDivider } from '@/blocks/CheckerDivider'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -28,25 +37,30 @@ export const Pages: CollectionConfig = {
       required: true,
       unique: true,
       admin: {
-        description: 'URL-friendly identifier, e.g. "about" or "contact".',
+        description: 'URL-friendly identifier, e.g. "home" or "about".',
       },
     },
     {
-      name: 'content',
-      type: 'richText',
+      name: 'layout',
+      type: 'blocks',
+      blocks: [
+        HeroBlock,
+        IngredientsBlock,
+        PhotoStripBlock,
+        StatementBannerBlock,
+        LocationsBlock,
+        SignupBlock,
+        SocialBlock,
+        TickerBannerBlock,
+        CheckerDivider,
+      ],
     },
     {
       name: 'seo',
       type: 'group',
       fields: [
-        {
-          name: 'title',
-          type: 'text',
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-        },
+        { name: 'title', type: 'text' },
+        { name: 'description', type: 'textarea' },
       ],
     },
   ],

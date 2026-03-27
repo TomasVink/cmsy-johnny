@@ -1,5 +1,139 @@
+/* Alfa Slab One — ingredient numbers (Google Fonts, no local file needed) */
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
+
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   Fonts — self-hosted from apps/web/static/
+───────────────────────────────────────────────────────────────────────────── */
+
+/* Barlow Condensed — display font for nav, buttons, labels, body, ingredient titles */
+@font-face {
+  font-family: 'Barlow Condensed';
+  src: url('/BarlowCondensed-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  src: url('/BarlowCondensed-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  src: url('/BarlowCondensed-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  src: url('/BarlowCondensed-BlackItalic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Cerline Rinande — large section display headings & hero logo text */
+@font-face {
+  font-family: 'Cerline Rinande';
+  src: url('/CerlineRinande Sans-Regular.woff2') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Design tokens  (exact values from Figma file efSrFHG7X0eVlvwZDc1E7y)
+───────────────────────────────────────────────────────────────────────────── */
+
 @theme {
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  /* Brand palette */
+  --color-brand-red:        #bb2025;   /* primary red — nav CTA, buttons, ingredient numbers */
+  --color-brand-yellow:     #f7d15a;   /* warm yellow — hero tagline, accents */
+  --color-brand-dark:       #1a1208;   /* near-black — text, borders */
+  --color-brand-cream:      #faf7e1;   /* warm cream — page background, nav bg */
+  --color-brand-cream-dark: #ede8d0;   /* slightly darker cream — card backgrounds */
+  --color-brand-muted:      #7a6a50;   /* warm brown — body / description text */
+
+  /* Typography families */
+  --font-display: 'Barlow Condensed', ui-sans-serif, sans-serif;
+  --font-script:  'Cerline Rinande', serif;
+  --font-slab:    'Alfa Slab One', serif;
+  --font-body:    'Barlow Condensed', ui-sans-serif, sans-serif;
+  --font-sans:    var(--font-body);
+
+  /* Shadows (hard / comic-book style — from Figma effect styles) */
+  --shadow-hard:  13.5px 12px 0 0 #000000;
+  --shadow-hard-sm: 5px 5px 0 0 #000000;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Base
+───────────────────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-brand-dark);
+  background: var(--color-brand-cream);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Utility: checker banner
+   True 20×20 px checkerboard pattern — used as top-of-page and section
+   dividers. Three colour variants matching the Figma design.
+   Uses repeating-conic-gradient (supported in all modern browsers).
+───────────────────────────────────────────────────────────────────────────── */
+
+/* Red variant: red squares on cream */
+.checker-red {
+  height: 40px;
+  background: repeating-conic-gradient(#bb2025 0% 25%, #faf7e1 0% 50%) 0 0 / 40px 40px;
+}
+
+/* Yellow variant: yellow squares on cream */
+.checker-yellow {
+  height: 40px;
+  background: repeating-conic-gradient(#f7d15a 0% 25%, #faf7e1 0% 50%) 0 0 / 40px 40px;
+}
+
+/* Black variant: dark squares on cream */
+.checker-black {
+  height: 40px;
+  background: repeating-conic-gradient(#1a1208 0% 25%, #faf7e1 0% 50%) 0 0 / 40px 40px;
+}
+
+/* Red/yellow variant: red squares on yellow — used by StatementBanner */
+.checker-red-yellow {
+  height: 40px;
+  background: repeating-conic-gradient(#bb2025 0% 25%, #f7d15a 0% 50%) 0 0 / 40px 40px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Animation: slow sunburst rotation
+   Used on the hero SVG element — rotates around the SVG's own centre point.
+───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes sunburst-spin {
+  from { transform: translateX(-50%) translateY(50%) rotate(0deg); }
+  to   { transform: translateX(-50%) translateY(50%) rotate(360deg); }
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.333%); }
 }

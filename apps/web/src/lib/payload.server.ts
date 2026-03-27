@@ -10,12 +10,12 @@
  */
 import { env } from '$env/dynamic/private'
 import { env as publicEnv } from '$env/dynamic/public'
-import { getAllPages as _getAllPages, getPageBySlug as _getPageBySlug } from './payload'
+import { getAllPages as _getAllPages, getPageBySlug as _getPageBySlug, getSiteSettings as _getSiteSettings } from './payload'
 
-export type { Page, Media, PaginatedDocs } from './payload'
+export type { Page, Media, PaginatedDocs, SiteSettings } from './payload'
 
 function internalUrl(): string {
-  return env.PAYLOAD_INTERNAL_URL || publicEnv.PUBLIC_PAYLOAD_URL
+  return env.PAYLOAD_INTERNAL_URL || publicEnv.PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
 }
 
 export function getPageBySlug(slug: string, fetchFn: typeof fetch = fetch) {
@@ -24,4 +24,8 @@ export function getPageBySlug(slug: string, fetchFn: typeof fetch = fetch) {
 
 export function getAllPages(fetchFn: typeof fetch = fetch) {
   return _getAllPages(fetchFn, internalUrl())
+}
+
+export function getSiteSettings(fetchFn: typeof fetch = fetch) {
+  return _getSiteSettings(fetchFn, internalUrl())
 }

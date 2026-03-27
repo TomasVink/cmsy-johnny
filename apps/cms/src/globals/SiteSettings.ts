@@ -1,0 +1,50 @@
+import type { GlobalConfig } from 'payload'
+
+export const SiteSettings: GlobalConfig = {
+  slug: 'site-settings',
+  label: 'Site Settings',
+  access: {
+    read: () => true,
+    update: ({ req }) => Boolean(req.user),
+  },
+  admin: {
+    group: 'Settings',
+  },
+  fields: [
+    {
+      name: 'logo',
+      type: 'upload',
+      relationTo: 'media',
+      admin: { description: 'Main site logo' },
+    },
+    {
+      name: 'navLinks',
+      type: 'array',
+      label: 'Navigation Links',
+      maxRows: 8,
+      fields: [
+        { name: 'label', type: 'text', required: true },
+        { name: 'href', type: 'text', required: true },
+      ],
+    },
+    {
+      name: 'navCta',
+      type: 'group',
+      label: 'Nav CTA Button',
+      fields: [
+        { name: 'label', type: 'text' },
+        { name: 'href', type: 'text' },
+      ],
+    },
+    {
+      name: 'footerLinks',
+      type: 'array',
+      label: 'Footer Links',
+      maxRows: 8,
+      fields: [
+        { name: 'label', type: 'text', required: true },
+        { name: 'href', type: 'text', required: true },
+      ],
+    },
+  ],
+}
