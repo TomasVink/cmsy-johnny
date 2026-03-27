@@ -1,12 +1,23 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%sveltekit.assets%/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    %sveltekit.head%
-  </head>
-  <body data-sveltekit-preload-data="hover">
-    <div style="display: contents">%sveltekit.body%</div>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%sveltekit.assets%/favicon.svg" id="favicon" />
+  <script>
+    var favicons = ['%sveltekit.assets%/favicon-yellow.svg', '%sveltekit.assets%/favicon.svg', '%sveltekit.assets%/favicon-red.svg', '%sveltekit.assets%/favicon.svg'];
+    var i = 0;
+    setInterval(function () {
+      i = (i + 1) % 4;
+      document.getElementById('favicon').href = favicons[i];
+    }, 500);
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  %sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover">
+  <div style="display: contents">%sveltekit.body%</div>
+</body>
+
 </html>
