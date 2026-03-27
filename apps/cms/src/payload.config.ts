@@ -4,6 +4,7 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
@@ -28,17 +29,17 @@ export default buildConfig({
     components: {
       afterNavLinks: [{ path: '/src/components/TopBar', exportName: 'default' }],
       graphics: {
-        Icon: '/src/components/Icon',
-      },
+        Icon: '/src/components/Icon'
+      }
     },
     livePreview: {
       collections: ['pages'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 812 },
         { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
-        { label: 'Desktop', name: 'desktop', width: 1280, height: 800 },
-      ],
-    },
+        { label: 'Desktop', name: 'desktop', width: 1280, height: 800 }
+      ]
+    }
   },
 
   collections: [Users, Media, Pages, FrituurApplications],
@@ -49,38 +50,49 @@ export default buildConfig({
 
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: process.env.DATABASE_URI || ''
     },
-    migrationDir: path.resolve(dirname, 'migrations'),
+    migrationDir: path.resolve(dirname, 'migrations')
   }),
 
-  plugins: useS3
-    ? [
-        s3Storage({
-          collections: {
-            media: {
-              prefix: process.env.NEXT_PUBLIC_PROJECT_SLUG,
-            },
-          },
-          bucket: process.env.S3_BUCKET!,
-          config: {
-            credentials: {
-              accessKeyId: process.env.S3_ACCESS_KEY!,
-              secretAccessKey: process.env.S3_SECRET_KEY!,
-            },
-            region: process.env.S3_REGION || 'auto',
-          },
-        }),
+  plugins: [
+    importExportPlugin({
+      collections: [
+        {
+          slug: 'frituur-applications',
+          disableJobsQueue: true,
+          import: false
+        }
       ]
-    : [],
+    }),
+    ...(useS3
+      ? [
+          s3Storage({
+            collections: {
+              media: {
+                prefix: process.env.NEXT_PUBLIC_PROJECT_SLUG
+              }
+            },
+            bucket: process.env.S3_BUCKET!,
+            config: {
+              credentials: {
+                accessKeyId: process.env.S3_ACCESS_KEY!,
+                secretAccessKey: process.env.S3_SECRET_KEY!
+              },
+              region: process.env.S3_REGION || 'auto'
+            }
+          })
+        ]
+      : [])
+  ],
 
   // Writes generated types directly into the shared workspace package.
   typescript: {
-    outputFile: path.resolve(dirname, '../../../packages/payload-types/src/index.ts'),
+    outputFile: path.resolve(dirname, '../../../packages/payload-types/src/index.ts')
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sharp: sharp as any,
 
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || ''
 })

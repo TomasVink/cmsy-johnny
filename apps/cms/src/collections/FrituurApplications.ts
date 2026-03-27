@@ -7,12 +7,11 @@ export const FrituurApplications: CollectionConfig = {
     create: () => true,
     read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user)
   },
   admin: {
     useAsTitle: 'frituurName',
-    defaultColumns: ['frituurName', 'firstName', 'lastName', 'email', 'createdAt'],
-    group: 'CRM',
+    defaultColumns: ['frituurName', 'name', 'email', 'createdAt']
   },
   fields: [
     { name: 'frituurName', type: 'text', required: true, label: 'Naam frituur' },
@@ -27,12 +26,12 @@ export const FrituurApplications: CollectionConfig = {
       admin: { description: 'Automatisch ingevuld via HERE API' },
       fields: [
         { name: 'lat', type: 'number', label: 'Breedtegraad (lat)' },
-        { name: 'lng', type: 'number', label: 'Lengtegraad (lng)' },
-      ],
+        { name: 'lng', type: 'number', label: 'Lengtegraad (lng)' }
+      ]
     },
     { name: 'phone', type: 'text', label: 'Telefoonnummer' },
     { name: 'email', type: 'email', required: true, label: 'E-mailadres' },
-    { name: 'visible', type: 'checkbox', defaultValue: false, label: 'Toon op kaart' },
+    { name: 'visible', type: 'checkbox', defaultValue: false, label: 'Toon op kaart' }
   ],
-  timestamps: true,
+  timestamps: true
 }
