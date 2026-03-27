@@ -5,17 +5,17 @@ export const SiteSettings: GlobalConfig = {
   label: 'Site Settings',
   access: {
     read: () => true,
-    update: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user)
   },
   admin: {
-    group: 'Settings',
+    group: 'Settings'
   },
   fields: [
     {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
-      admin: { description: 'Main site logo' },
+      admin: { description: 'Main site logo' }
     },
     {
       name: 'navLinks',
@@ -24,8 +24,8 @@ export const SiteSettings: GlobalConfig = {
       maxRows: 8,
       fields: [
         { name: 'label', type: 'text', required: true },
-        { name: 'href', type: 'text', required: true },
-      ],
+        { name: 'href', type: 'text', required: true }
+      ]
     },
     {
       name: 'navCta',
@@ -33,8 +33,8 @@ export const SiteSettings: GlobalConfig = {
       label: 'Nav CTA Button',
       fields: [
         { name: 'label', type: 'text' },
-        { name: 'href', type: 'text' },
-      ],
+        { name: 'href', type: 'text' }
+      ]
     },
     {
       name: 'footerLinks',
@@ -43,8 +43,15 @@ export const SiteSettings: GlobalConfig = {
       maxRows: 8,
       fields: [
         { name: 'label', type: 'text', required: true },
-        { name: 'href', type: 'text', required: true },
-      ],
+        { name: 'href', type: 'text', required: true }
+      ]
     },
-  ],
+    {
+      name: 'footerImage',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Footer Image',
+      admin: { description: 'Afbeelding zichtbaar boven de footer' }
+    }
+  ]
 }

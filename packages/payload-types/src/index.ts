@@ -1059,6 +1059,10 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Afbeelding zichtbaar boven de footer
+   */
+  footerImage?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1088,6 +1092,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
+  footerImage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

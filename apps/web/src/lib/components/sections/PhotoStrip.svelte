@@ -16,12 +16,12 @@
   }
 </script>
 
-<Section id={block.sectionId}>
-  <div class="flex">
+<Section id="">
+  <div class="grid grid-cols-1 sm:grid-cols-4 gap-8 px-8 sm:px-0">
     {#each block.photos as photo}
       {@const src = imageUrl(photo.image)}
       {#if src}
-        <div class="flex flex-col flex-1 min-w-0 gap-4 mx-4">
+        <div class="flex flex-col gap-4">
           <HardShadowFrame shadow="lg">
             <img
               {src}
@@ -30,9 +30,7 @@
             />
           </HardShadowFrame>
           {#if photo.caption}
-            <p
-              class="font-display font-black text-brand-dark text-[11.2px] tracking-[3px] uppercase"
-            >
+            <p class="font-display font-black text-brand-dark text-lg tracking-[3px] uppercase">
               {photo.caption}
             </p>
           {/if}

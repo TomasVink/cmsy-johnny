@@ -1,12 +1,11 @@
 <script lang="ts">
-  import type { HeroBlock } from "$lib/payload";
+  import type { HeroBlock } from '$lib/payload'
+  import Section from '../ui/Section.svelte'
 
-  type Props = { block: HeroBlock };
-  let { block }: Props = $props();
+  type Props = { block: HeroBlock }
+  let { block }: Props = $props()
 
-  const headlineMedia = $derived(
-    typeof block.headline === "object" ? block.headline : null,
-  );
+  const headlineMedia = $derived(typeof block.headline === 'object' ? block.headline : null)
 
   // Split tagline on "·" or "+" so separators can be rendered at reduced opacity
   const taglineParts = $derived(
@@ -15,29 +14,19 @@
           .split(/\s*[·+]\s*/)
           .map((p) => p.trim())
           .filter(Boolean)
-      : [],
-  );
+      : []
+  )
 </script>
 
-<section
-  class="relative flex flex-col items-center justify-center text-center
-         px-6 py-38.75 overflow-hidden min-h-154.5 bg-brand-red"
->
-  <!--
-    Sunburst SVG — full 360° circle, centre anchored to the bottom edge of the
-    hero so only the upper half fans into view. Rotates slowly via CSS animation.
-    The transform-origin is the SVG's own centre (50% 50% = default).
-  -->
+<Section id="" class="bg-brand-red py-8 relative overflow-hidden">
   <img
     src="/sunburst.svg"
     alt=""
     aria-hidden="true"
-    class="absolute pointer-events-none select-none"
+    class="absolute pointer-events-none select-none max-w-none -bottom-12 lg:-bottom-24"
     style="
-      width: 250vmax;
-      height: auto;
+      width: 120vmax;
       left: 50%;
-      bottom: -8rem;
       animation: sunburst-spin 360s linear infinite;
     "
   />
@@ -45,9 +34,9 @@
   <!-- Headline image (uploaded via CMS) -->
   {#if headlineMedia}
     <img
-      src={headlineMedia.url ?? ""}
-      alt={headlineMedia.alt ?? ""}
-      class="relative z-10 w-full max-w-146.5 mb-8"
+      src={headlineMedia.url ?? ''}
+      alt={headlineMedia.alt ?? ''}
+      class="relative z-10 w-full max-w-146.5 mb-8 mx-auto"
     />
   {/if}
 
@@ -71,7 +60,7 @@
   {#if block.ctaButtons?.length}
     <div class="flex flex-wrap items-center justify-center gap-3 relative z-10">
       {#each block.ctaButtons as btn}
-        {#if btn.variant === "solid"}
+        {#if btn.variant === 'solid'}
           <!-- Solid: red bg + semi-transparent white border + cream text -->
           <a
             href={btn.href}
@@ -97,4 +86,4 @@
       {/each}
     </div>
   {/if}
-</section>
+</Section>
