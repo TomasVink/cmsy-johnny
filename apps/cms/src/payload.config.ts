@@ -60,8 +60,10 @@ export default buildConfig({
       collections: [
         {
           slug: 'frituur-applications',
-          disableJobsQueue: true,
-          import: false
+          import: false,
+          export: {
+            disableJobsQueue: true
+          }
         }
       ]
     }),
@@ -86,9 +88,8 @@ export default buildConfig({
       : [])
   ],
 
-  // Writes generated types directly into the shared workspace package.
   typescript: {
-    outputFile: path.resolve(dirname, '../../../packages/payload-types/src/index.ts')
+    outputFile: path.resolve(dirname, 'payload-types.ts')
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
