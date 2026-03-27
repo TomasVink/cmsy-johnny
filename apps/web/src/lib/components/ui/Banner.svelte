@@ -1,5 +1,5 @@
 <script lang="ts">
-  type Variant = 'red' | 'yellow' | 'black'
+  type Variant = 'red' | 'yellow' | 'black' | 'red-yellow'
 
   type Props = {
     variant?: Variant
@@ -9,9 +9,10 @@
   let { variant = 'red', class: className = '' }: Props = $props()
 
   const variantClass: Record<Variant, string> = {
-    red:    'checker-red',
+    red: 'checker-red',
     yellow: 'checker-yellow',
-    black:  'checker-black',
+    black: 'checker-black',
+    'red-yellow': 'checker-red-yellow'
   }
 </script>
 

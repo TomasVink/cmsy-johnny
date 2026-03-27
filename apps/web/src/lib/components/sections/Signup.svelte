@@ -184,7 +184,7 @@
   const altText = $derived(typeof block.image === 'object' && block.image ? block.image.alt : '')
 </script>
 
-<Section id={block.sectionId ?? ''} class="flex-col">
+<Section id={block.sectionId ?? ''}>
   <SectionTitle {...block} />
 
   <div class="flex gap-12">

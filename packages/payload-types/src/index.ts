@@ -325,6 +325,7 @@ export interface Page {
              */
             sectionId?: string | null;
             title: string;
+            subtitle?: string | null;
             description?: string | null;
             accounts: {
               platform: 'instagram' | 'facebook' | 'linkedin' | 'tiktok' | 'twitter' | 'youtube';
@@ -805,6 +806,7 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               sectionId?: T;
               title?: T;
+              subtitle?: T;
               description?: T;
               accounts?:
                 | T

@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { SocialBlock } from '$lib/payload'
+  import Section from '../ui/Section.svelte'
+  import SectionTitle from '../ui/SectionTitle.svelte'
 
   type Props = { block: SocialBlock }
   let { block }: Props = $props()
@@ -10,7 +12,7 @@
     linkedin: 'LinkedIn',
     tiktok: 'TikTok',
     twitter: 'Twitter / X',
-    youtube: 'YouTube',
+    youtube: 'YouTube'
   }
 
   // Simple inline SVG icons per platform
@@ -20,48 +22,37 @@
     linkedin: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`,
     tiktok: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>`,
     twitter: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
-    youtube: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>`,
+    youtube: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>`
   }
 </script>
 
-<section id={block.sectionId ?? 'social'} class="bg-brand-dark py-20 px-4">
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="mb-12 text-center">
-      <p class="text-brand-yellow font-display text-xs tracking-[0.3em] uppercase mb-3">
-        · social media
-      </p>
-      {#if block.title}
-        <h2 class="font-display text-5xl md:text-6xl lg:text-7xl font-black uppercase text-white leading-none">
-          {block.title}
-        </h2>
-      {/if}
-      {#if block.description}
-        <p class="font-body text-white/60 mt-4 max-w-xl mx-auto">{block.description}</p>
-      {/if}
-    </div>
+<Section id={block.sectionId ?? 'social'} class="bg-brand-red py-20 px-4">
+  <SectionTitle {...block} variant="dark" />
+  <!-- Header -->
+  {#if block.description}
+    <p class="text-white/60 my-4 font-bold text-2xl">{block.description}</p>
+  {/if}
 
-    <!-- Social cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {#each block.accounts ?? [] as account}
-        <a
-          href={account.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex flex-col items-center gap-3 bg-white/5 hover:bg-white/10
+  <!-- Social cards -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    {#each block.accounts ?? [] as account}
+      <a
+        href={account.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex flex-col items-center gap-3 bg-white/5 hover:bg-white/10
                  border border-white/10 rounded-2xl p-6 transition-colors group"
-        >
-          <div class="w-10 h-10 text-white group-hover:text-brand-yellow transition-colors">
-            {@html platformIcons[account.platform] ?? ''}
-          </div>
-          <div class="text-center">
-            <p class="font-display text-white text-sm font-bold uppercase">
-              {platformLabels[account.platform] ?? account.platform}
-            </p>
-            <p class="font-body text-white/50 text-xs mt-0.5">{account.handle}</p>
-          </div>
-        </a>
-      {/each}
-    </div>
+      >
+        <div class="w-10 h-10 text-white group-hover:text-brand-yellow transition-colors">
+          {@html platformIcons[account.platform] ?? ''}
+        </div>
+        <div class="text-center">
+          <p class="font-display text-white text-3xl font-bold uppercase">
+            {platformLabels[account.platform] ?? account.platform}
+          </p>
+          <p class="text-white/50 font-semibold text-xl mt-0.5">{account.handle}</p>
+        </div>
+      </a>
+    {/each}
   </div>
-</section>
+</Section>

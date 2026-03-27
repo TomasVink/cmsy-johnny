@@ -8,9 +8,10 @@ export const SocialBlock: Block = {
       name: 'sectionId',
       type: 'text',
       defaultValue: 'social',
-      admin: { description: 'HTML anchor id for nav linking' },
+      admin: { description: 'HTML anchor id for nav linking' }
     },
-    { name: 'title', type: 'text', required: true },
+    { name: 'title', type: 'textarea', required: true },
+    { name: 'subtitle', type: 'text' },
     { name: 'description', type: 'textarea' },
     {
       name: 'accounts',
@@ -29,12 +30,12 @@ export const SocialBlock: Block = {
             { label: 'LinkedIn', value: 'linkedin' },
             { label: 'TikTok', value: 'tiktok' },
             { label: 'Twitter / X', value: 'twitter' },
-            { label: 'YouTube', value: 'youtube' },
-          ],
+            { label: 'YouTube', value: 'youtube' }
+          ]
         },
         { name: 'handle', type: 'text', required: true },
-        { name: 'url', type: 'text', required: true },
-      ],
-    },
-  ],
+        { name: 'url', type: 'text', required: true }
+      ]
+    }
+  ]
 }

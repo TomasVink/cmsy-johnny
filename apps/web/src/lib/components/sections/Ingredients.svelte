@@ -1,33 +1,27 @@
 <script lang="ts">
-  import { env } from "$env/dynamic/public";
-  import type { IngredientsBlock } from "$lib/payload";
-  import type { Media } from "@repo/payload-types";
-  import HardShadowFrame from "$lib/components/ui/HardShadowFrame.svelte";
-  import Section from "../ui/Section.svelte";
-  import SectionTitle from "../ui/SectionTitle.svelte";
-  import Description from "../ui/Description.svelte";
+  import { env } from '$env/dynamic/public'
+  import type { IngredientsBlock } from '$lib/payload'
+  import type { Media } from '@repo/payload-types'
+  import HardShadowFrame from '$lib/components/ui/HardShadowFrame.svelte'
+  import Section from '../ui/Section.svelte'
+  import SectionTitle from '../ui/SectionTitle.svelte'
+  import Description from '../ui/Description.svelte'
 
-  type Props = { block: IngredientsBlock };
-  let { block }: Props = $props();
+  type Props = { block: IngredientsBlock }
+  let { block }: Props = $props()
 
   function imageUrl(img: number | Media | null | undefined): string | null {
-    if (!img || typeof img === "number") return null;
-    if (img.url)
-      return img.url.startsWith("http")
-        ? img.url
-        : `${env.PUBLIC_PAYLOAD_URL}${img.url}`;
-    if (img.filename)
-      return `${env.PUBLIC_PAYLOAD_URL}/api/media/file/${img.filename}`;
-    return null;
+    if (!img || typeof img === 'number') return null
+    if (img.url) return img.url.startsWith('http') ? img.url : `${env.PUBLIC_PAYLOAD_URL}${img.url}`
+    if (img.filename) return `${env.PUBLIC_PAYLOAD_URL}/api/media/file/${img.filename}`
+    return null
   }
 
-  const src = $derived(imageUrl(block.image));
-  const altText = $derived(
-    typeof block.image === "object" && block.image ? block.image.alt : "",
-  );
+  const src = $derived(imageUrl(block.image))
+  const altText = $derived(typeof block.image === 'object' && block.image ? block.image.alt : '')
 </script>
 
-<Section id={block.sectionId ?? ""} class="flex-col">
+<Section id={block.sectionId ?? ''}>
   <SectionTitle {...block} />
 
   <!-- Two-column: image + content -->
@@ -73,9 +67,7 @@
                   {item.title}
                 </h3>
                 {#if item.description}
-                  <p
-                    class="font-display font-bold text-brand-muted text-3.6 leading-normal"
-                  >
+                  <p class="font-display font-bold text-brand-muted text-3.6 leading-normal">
                     {item.description}
                   </p>
                 {/if}
