@@ -38,6 +38,7 @@ export type TickerBannerBlock = Extract<
   { blockType: "ticker-banner" }
 >;
 export type SignupBlock = Extract<LayoutBlock, { blockType: "signup" }>;
+export type PolaroidsBlock = Extract<LayoutBlock, { blockType: "polaroids" }>;
 
 export type PaginatedDocs<T> = {
   docs: T[];

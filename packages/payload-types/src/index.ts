@@ -358,6 +358,23 @@ export interface Page {
             blockName?: string | null;
             blockType: 'checker-divider';
           }
+        | {
+            /**
+             * HTML anchor id for nav linking
+             */
+            sectionId?: string | null;
+            photos: {
+              image: number | Media;
+              /**
+               * Caption shown at the bottom of the polaroid
+               */
+              title: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'polaroids';
+          }
       )[]
     | null;
   seo?: {
@@ -836,6 +853,20 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               variant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        polaroids?:
+          | T
+          | {
+              sectionId?: T;
+              photos?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };

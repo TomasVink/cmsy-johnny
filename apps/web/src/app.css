@@ -1,7 +1,7 @@
 /* Alfa Slab One — ingredient numbers (Google Fonts, no local file needed) */
 @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Fonts — self-hosted from apps/web/static/
@@ -49,28 +49,36 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Cerline Rinande Script';
+  src: url('/CerlineRinande Script-Regular.woff2') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    Design tokens  (exact values from Figma file efSrFHG7X0eVlvwZDc1E7y)
 ───────────────────────────────────────────────────────────────────────────── */
 
 @theme {
   /* Brand palette */
-  --color-brand-red:        #bb2025;   /* primary red — nav CTA, buttons, ingredient numbers */
-  --color-brand-yellow:     #f7d15a;   /* warm yellow — hero tagline, accents */
-  --color-brand-dark:       #1a1208;   /* near-black — text, borders */
-  --color-brand-cream:      #faf7e1;   /* warm cream — page background, nav bg */
-  --color-brand-cream-dark: #ede8d0;   /* slightly darker cream — card backgrounds */
-  --color-brand-muted:      #7a6a50;   /* warm brown — body / description text */
+  --color-brand-red: #bb2025; /* primary red — nav CTA, buttons, ingredient numbers */
+  --color-brand-yellow: #f7d15a; /* warm yellow — hero tagline, accents */
+  --color-brand-dark: #1a1208; /* near-black — text, borders */
+  --color-brand-cream: #faf7e1; /* warm cream — page background, nav bg */
+  --color-brand-cream-dark: #ede8d0; /* slightly darker cream — card backgrounds */
+  --color-brand-muted: #7a6a50; /* warm brown — body / description text */
 
   /* Typography families */
   --font-display: 'Barlow Condensed', ui-sans-serif, sans-serif;
-  --font-script:  'Cerline Rinande', serif;
-  --font-slab:    'Alfa Slab One', serif;
-  --font-body:    'Barlow Condensed', ui-sans-serif, sans-serif;
-  --font-sans:    var(--font-body);
+  --font-script: 'Cerline Rinande', serif;
+  --font-slab: 'Alfa Slab One', serif;
+  --font-body: 'Barlow Condensed', ui-sans-serif, sans-serif;
+  --font-sans: var(--font-body);
 
   /* Shadows (hard / comic-book style — from Figma effect styles) */
-  --shadow-hard:  13.5px 12px 0 0 #000000;
+  --shadow-hard: 13.5px 12px 0 0 #000000;
   --shadow-hard-sm: 5px 5px 0 0 #000000;
 }
 
@@ -78,7 +86,9 @@
    Base
 ───────────────────────────────────────────────────────────────────────────── */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -129,11 +139,19 @@ body {
 ───────────────────────────────────────────────────────────────────────────── */
 
 @keyframes sunburst-spin {
-  from { transform: translateX(-50%) translateY(50%) rotate(0deg); }
-  to   { transform: translateX(-50%) translateY(50%) rotate(360deg); }
+  from {
+    transform: translateX(-50%) translateY(50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) translateY(50%) rotate(360deg);
+  }
 }
 
 @keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-33.333%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
 }

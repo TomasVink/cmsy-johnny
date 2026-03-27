@@ -8,6 +8,7 @@ import { SignupBlock } from '../blocks/Signup'
 import { SocialBlock } from '../blocks/Social'
 import { TickerBannerBlock } from '../blocks/TickerBanner'
 import { CheckerDivider } from '@/blocks/CheckerDivider'
+import { PolaroidsBlock } from '../blocks/Polaroids'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -53,6 +54,7 @@ export const Pages: CollectionConfig = {
         SocialBlock,
         TickerBannerBlock,
         CheckerDivider,
+        PolaroidsBlock,
       ],
     },
     {

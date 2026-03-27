@@ -9,6 +9,7 @@
   import type { Page, TickerBannerBlock } from "$lib/payload";
   import Banner from "./ui/Banner.svelte";
   import Signup from "./sections/Signup.svelte";
+  import Polaroids from "./sections/Polaroids.svelte";
 
   type Props = {
     blocks: Page["layout"];
@@ -39,6 +40,8 @@
         variant={tb.variant ?? "red"}
         items={(tb.items ?? []).map((i) => i.text).filter(Boolean)}
       />
+    {:else if block.blockType === "polaroids"}
+      <Polaroids {block} />
     {:else if block.blockType === "checker-divider"}
       <Banner variant={block.variant ?? undefined} />
     {/if}
