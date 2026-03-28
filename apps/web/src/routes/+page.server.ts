@@ -8,9 +8,8 @@ function detectLocale(acceptLanguage: string | null, cookie: string | undefined)
 }
 
 export const load: PageServerLoad = ({ request, cookies }) => {
-  const locale = detectLocale(
-    request.headers.get('accept-language'),
-    cookies.get('locale')
-  )
+  const locale = detectLocale(request.headers.get('accept-language'), cookies.get('locale'))
   redirect(302, `/${locale}`)
 }
+
+export const ssr = true

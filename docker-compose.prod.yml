@@ -32,6 +32,13 @@
 #   LOGTO_ENDPOINT, LOGTO_APP_ID, LOGTO_APP_SECRET, LOGTO_ORG_ID
 #   LOGTO_M2M_APP_ID, LOGTO_M2M_APP_SECRET
 #
+# Optional (custom domain with CDN):
+#   NEXT_PUBLIC_SERVER_URL   Set to the public client domain (e.g. https://www.clientsite.be) so
+#                            Payload prefixes media URLs with the CDN domain. Defaults to PUBLIC_DOMAIN.
+#   NEXT_PUBLIC_ADMIN_URL    Set to the origin subdomain (e.g. https://slug.cmsy.digitalestrateeg.com)
+#                            so OAuth callbacks and the payload-token cookie stay on the origin, not the
+#                            CDN. Required when NEXT_PUBLIC_SERVER_URL differs from PUBLIC_DOMAIN.
+#
 # Optional (cms-platform top bar):
 #   NEXT_PUBLIC_CMS_PLATFORM_URL, NEXT_PUBLIC_PROJECT_SLUG
 
@@ -43,9 +50,10 @@ services:
     environment:
       DATABASE_URI: ${DATABASE_URI}
       PAYLOAD_SECRET: ${PAYLOAD_SECRET}
-      NEXT_PUBLIC_SERVER_URL: ${PUBLIC_DOMAIN}
-      NEXT_PUBLIC_WEB_URL: ${PUBLIC_DOMAIN}
+      NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
+      NEXT_PUBLIC_WEB_URL: ${NEXT_PUBLIC_WEB_URL}
       # Optional
+      NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-}
       LOGTO_ENDPOINT: ${LOGTO_ENDPOINT:-}
       LOGTO_APP_ID: ${LOGTO_APP_ID:-}
       LOGTO_APP_SECRET: ${LOGTO_APP_SECRET:-}
