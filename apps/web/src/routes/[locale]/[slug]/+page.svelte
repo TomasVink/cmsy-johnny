@@ -31,9 +31,9 @@
   </div>
 {/if}
 
-<Nav settings={data.settings} />
+<Nav settings={data.settings} locale={data.locale} />
 
 <!-- eslint-disable-next-line @typescript-eslint/no-explicit-any -->
 <BlockRenderer blocks={((preview.data as any)?.layout) ?? []} />
 
-<Footer settings={data.settings} />
+<Footer settings={data.settings} locale={data.locale} />

@@ -44,10 +44,11 @@ export type PaginatedDocs<T> = {
  */
 export async function getPageBySlug(
   slug: string,
+  locale: string,
   fetchFn: typeof fetch = fetch,
   baseUrl = env.PUBLIC_PAYLOAD_URL
 ): Promise<Page | null> {
-  const url = `${baseUrl}/api/pages?where[slug][equals]=${encodeURIComponent(slug)}&limit=1`
+  const url = `${baseUrl}/api/pages?where[slug][equals]=${encodeURIComponent(slug)}&locale=${locale}&limit=1`
 
   const response = await fetchFn(url)
   if (!response.ok) return null
@@ -60,10 +61,11 @@ export async function getPageBySlug(
  * Fetches the SiteSettings global from Payload's REST API.
  */
 export async function getSiteSettings(
+  locale: string,
   fetchFn: typeof fetch = fetch,
   baseUrl = env.PUBLIC_PAYLOAD_URL
 ): Promise<SiteSettings> {
-  const url = `${baseUrl}/api/globals/site-settings`
+  const url = `${baseUrl}/api/globals/site-settings?locale=${locale}`
   const response = await fetchFn(url)
   if (!response.ok) return {}
   return (await response.json()) as SiteSettings
@@ -73,10 +75,11 @@ export async function getSiteSettings(
  * Fetches all pages from Payload's REST API.
  */
 export async function getAllPages(
+  locale: string,
   fetchFn: typeof fetch = fetch,
   baseUrl = env.PUBLIC_PAYLOAD_URL
 ): Promise<Page[]> {
-  const url = `${baseUrl}/api/pages?limit=100`
+  const url = `${baseUrl}/api/pages?locale=${locale}&limit=100`
 
   const response = await fetchFn(url)
   if (!response.ok) return []

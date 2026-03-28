@@ -23,7 +23,7 @@ export const SiteSettings: GlobalConfig = {
       label: 'Navigation Links',
       maxRows: 8,
       fields: [
-        { name: 'label', type: 'text', required: true },
+        { name: 'label', type: 'text', required: true, localized: true },
         { name: 'href', type: 'text', required: true }
       ]
     },
@@ -32,7 +32,7 @@ export const SiteSettings: GlobalConfig = {
       type: 'group',
       label: 'Nav CTA Button',
       fields: [
-        { name: 'label', type: 'text' },
+        { name: 'label', type: 'text', localized: true },
         { name: 'href', type: 'text' }
       ]
     },
@@ -42,7 +42,7 @@ export const SiteSettings: GlobalConfig = {
       label: 'Footer Links',
       maxRows: 8,
       fields: [
-        { name: 'label', type: 'text', required: true },
+        { name: 'label', type: 'text', required: true, localized: true },
         { name: 'href', type: 'text', required: true }
       ]
     },
@@ -51,7 +51,7 @@ export const SiteSettings: GlobalConfig = {
       type: 'upload',
       relationTo: 'media',
       label: 'Footer Image',
-      admin: { description: 'Afbeelding zichtbaar boven de footer' }
+      admin: { description: 'Image shown above the footer' }
     }
   ]
 }

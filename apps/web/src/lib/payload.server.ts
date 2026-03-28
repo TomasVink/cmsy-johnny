@@ -18,14 +18,14 @@ function internalUrl(): string {
   return env.PAYLOAD_INTERNAL_URL || publicEnv.PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
 }
 
-export function getPageBySlug(slug: string, fetchFn: typeof fetch = fetch) {
-  return _getPageBySlug(slug, fetchFn, internalUrl())
+export function getPageBySlug(slug: string, locale: string, fetchFn: typeof fetch = fetch) {
+  return _getPageBySlug(slug, locale, fetchFn, internalUrl())
 }
 
-export function getAllPages(fetchFn: typeof fetch = fetch) {
-  return _getAllPages(fetchFn, internalUrl())
+export function getAllPages(locale: string, fetchFn: typeof fetch = fetch) {
+  return _getAllPages(locale, fetchFn, internalUrl())
 }
 
-export function getSiteSettings(fetchFn: typeof fetch = fetch) {
-  return _getSiteSettings(fetchFn, internalUrl())
+export function getSiteSettings(locale: string, fetchFn: typeof fetch = fetch) {
+  return _getSiteSettings(locale, fetchFn, internalUrl())
 }

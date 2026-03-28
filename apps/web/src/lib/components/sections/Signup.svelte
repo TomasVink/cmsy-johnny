@@ -6,6 +6,7 @@
   import SectionTitle from '../ui/SectionTitle.svelte'
   import Description from '../ui/Description.svelte'
   import FormField from '../ui/FormField.svelte'
+  import Spinner from '../ui/Spinner.svelte'
 
   type Props = { block: SignupBlock }
   let { block }: Props = $props()
@@ -209,32 +210,32 @@
           <div class="grid grid-cols-2 gap-4">
             <FormField
               id="frituurName"
-              label="Naam frituur"
+              label={block.labels?.frituurName ?? ''}
               type="text"
               bind:value={form.frituurName}
-              placeholder="Naam frituur"
+              placeholder={block.labels?.frituurName ?? ''}
               error={errors.frituurName}
             />
 
             <FormField
               id="name"
-              label="Naam"
+              label={block.labels?.name ?? ''}
               type="text"
               bind:value={form.name}
-              placeholder="Voor- en familienaam"
+              placeholder={block.labels?.name ?? ''}
               error={errors.name}
             />
 
             <FormField
               id="address"
-              label="Adres"
+              label={block.labels?.address ?? ''}
               type="text"
               bind:el={addressInputEl}
               value={form.address}
               oninput={onAddressInput}
               onkeydown={onAddressKeydown}
               onblur={onAddressBlur}
-              placeholder="Straat en nummer"
+              placeholder={block.labels?.address ?? ''}
               autocomplete="off"
               error={errors.address}
               class="col-span-2"
@@ -262,37 +263,37 @@
 
             <FormField
               id="postcode"
-              label="Postcode"
+              label={block.labels?.postcode ?? ''}
               type="text"
               bind:value={form.postcode}
-              placeholder="Postcode"
+              placeholder={block.labels?.postcode ?? ''}
               error={errors.postcode}
             />
 
             <FormField
               id="city"
-              label="Gemeente"
+              label={block.labels?.city ?? ''}
               type="text"
               bind:value={form.city}
-              placeholder="Gemeente"
+              placeholder={block.labels?.city ?? ''}
               error={errors.city}
             />
 
             <FormField
               id="phone"
-              label="Telefoonnummer"
+              label={block.labels?.phone ?? ''}
               type="tel"
               bind:value={form.phone}
-              placeholder="+32 ..."
+              placeholder={block.labels?.phone ?? ''}
               error={errors.phone}
             />
 
             <FormField
               id="email"
-              label="E-mailadres"
+              label={block.labels?.email ?? ''}
               type="email"
               bind:value={form.email}
-              placeholder="jouw@email.be"
+              placeholder={block.labels?.email ?? ''}
               error={errors.email}
             />
           </div>
@@ -306,11 +307,14 @@
             disabled={status === 'loading'}
             class="w-full bg-brand-red text-white font-display text-sm font-bold uppercase
                    tracking-widest py-4 hover:bg-brand-red transition-colors
-                   disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                   disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer
+                   flex items-center justify-center gap-2"
           >
-            {status === 'loading'
-              ? 'Even geduld…'
-              : (block.ctaLabel ?? 'Ik wil een Johnny schrijven')}
+            {#if status === 'loading'}
+              <Spinner size={18} />
+            {:else}
+              {block.ctaLabel}
+            {/if}
           </button>
 
           <p class="text-brand-muted text-center font-bold text-sm">

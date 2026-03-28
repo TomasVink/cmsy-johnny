@@ -29,6 +29,7 @@ export const PolaroidsBlock: Block = {
           name: 'title',
           type: 'text',
           required: true,
+          localized: true,
           admin: {
             description: 'Caption shown at the bottom of the polaroid',
           },

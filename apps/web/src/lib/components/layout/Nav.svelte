@@ -1,24 +1,26 @@
 <script lang="ts">
   import type { SiteSettings } from '$lib/payload'
   import Banner from '$lib/components/ui/Banner.svelte'
+  import { localizeHref } from '$lib/utils'
+  import { page } from '$app/stores'
 
   type Props = {
     settings: SiteSettings
+    locale: string
   }
 
-  let { settings }: Props = $props()
+  let { settings, locale }: Props = $props()
 
   let menuOpen = $state(false)
 
-  const defaultNavLinks = [
-    { label: 'Wat is het', href: '#wat-is-een-johnnie' },
-    { label: 'Vind een frituur', href: '#vind-een-frituur' },
-    { label: 'Social', href: '#social' },
-    { label: 'Join', href: '#over-frituurbakkers' }
-  ]
+  const navLinks = $derived(settings.navLinks ?? [])
+  const cta = $derived(settings.navCta)
 
-  const navLinks = $derived(settings.navLinks?.length ? settings.navLinks : defaultNavLinks)
-  const cta = $derived(settings.navCta ?? { label: 'Vind een Johnnie', href: '#vind-een-frituur' })
+  const locales = ['nl', 'fr'] as const
+
+  function switchLocalHref(target: string): string {
+    return $page.url.pathname.replace(/^\/(nl|fr)/, `/${target}`)
+  }
 </script>
 
 <!-- Checker strip at very top of page -->
@@ -28,7 +30,7 @@
   <nav class="bg-brand-cream border-b-2 border-brand-dark">
     <div class="max-w-273.5 mx-auto px-10 flex items-center justify-between h-13">
       <!-- Logo -->
-      <a href="/" class="shrink-0 leading-none">
+      <a href="/{locale}" class="shrink-0 leading-none">
         {#if settings.logo && typeof settings.logo === 'object' && settings.logo.url}
           <img src={settings.logo.url} alt="Here's Johnny!" class="h-10 w-auto" />
         {:else}
@@ -43,7 +45,7 @@
           {#each navLinks as link}
             <li>
               <a
-                href={link.href}
+                href={localizeHref(link.href, locale)}
                 class="font-display font-black not-italic text-brand-dark text-3
                        tracking-[3px] uppercase hover:text-brand-red transition-colors"
               >
@@ -53,16 +55,32 @@
           {/each}
         </ul>
 
+        <!-- Language switcher -->
+        <div class="flex items-center gap-2">
+          {#each locales as loc}
+            <a
+              href={switchLocalHref(loc)}
+              class="font-display font-black not-italic text-3 tracking-[3px] uppercase transition-colors
+                     {loc === locale ? 'text-brand-red' : 'text-brand-dark hover:text-brand-red'}"
+            >
+              {loc}
+            </a>
+            {#if loc !== locales[locales.length - 1]}
+              <span class="text-brand-dark/40 text-3">/</span>
+            {/if}
+          {/each}
+        </div>
+
         <!-- CTA button -->
-        {#if cta.href}
+        {#if cta?.href}
           <a
-            href={cta.href ?? '#'}
+            href={localizeHref(cta.href, locale)}
             class="inline-flex items-center px-5.5 py-2 rounded-0.75
                  bg-brand-red text-brand-cream font-display font-black not-italic
                  text-3 tracking-[3px] uppercase
                  hover:brightness-110 transition-all"
           >
-            {cta.label ?? 'Vind een Johnnie'}
+            {cta.label}
           </a>
         {/if}
       </div>
@@ -96,7 +114,7 @@
           {#each navLinks as link}
             <li>
               <a
-                href={link.href}
+                href={localizeHref(link.href, locale)}
                 class="font-display font-black not-italic text-brand-dark text-3
                        tracking-[3px] uppercase hover:text-brand-red transition-colors"
                 onclick={() => (menuOpen = false)}
@@ -105,16 +123,35 @@
               </a>
             </li>
           {/each}
+          {#if cta?.href}
+            <li>
+              <a
+                href={localizeHref(cta.href, locale)}
+                class="inline-flex items-center px-5.5 py-2 rounded-0.75
+                       bg-brand-red text-brand-cream font-display font-black not-italic
+                       text-3 tracking-[3px] uppercase"
+                onclick={() => (menuOpen = false)}
+              >
+                {cta.label}
+              </a>
+            </li>
+          {/if}
           <li>
-            <a
-              href={cta.href ?? '#'}
-              class="inline-flex items-center px-5.5 py-2 rounded-0.75
-                     bg-brand-red text-brand-cream font-display font-black not-italic
-                     text-3 tracking-[3px] uppercase"
-              onclick={() => (menuOpen = false)}
-            >
-              {cta.label ?? 'Vind een Johnnie'}
-            </a>
+            <div class="flex items-center gap-2">
+              {#each locales as loc}
+                <a
+                  href={switchLocalHref(loc)}
+                  class="font-display font-black not-italic text-3 tracking-[3px] uppercase transition-colors
+                         {loc === locale ? 'text-brand-red' : 'text-brand-dark hover:text-brand-red'}"
+                  onclick={() => (menuOpen = false)}
+                >
+                  {loc}
+                </a>
+                {#if loc !== locales[locales.length - 1]}
+                  <span class="text-brand-dark/40 text-3">/</span>
+                {/if}
+              {/each}
+            </div>
           </li>
         </ul>
       </div>

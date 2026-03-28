@@ -29,6 +29,7 @@ export const TickerBannerBlock: Block = {
           name: 'text',
           type: 'text',
           required: true,
+          localized: true,
         },
       ],
     },

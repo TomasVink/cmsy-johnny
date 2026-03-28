@@ -24,6 +24,15 @@ export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   cors: (process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:5173').split(','),
 
+  localization: {
+    locales: [
+      { label: 'NL', code: 'nl' },
+      { label: 'FR', code: 'fr' }
+    ],
+    defaultLocale: 'nl',
+    fallback: true
+  },
+
   admin: {
     user: Users.slug,
     components: {

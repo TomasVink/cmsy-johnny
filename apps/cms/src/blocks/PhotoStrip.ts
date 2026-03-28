@@ -17,7 +17,7 @@ export const PhotoStripBlock: Block = {
           relationTo: 'media',
           required: true,
         },
-        { name: 'caption', type: 'text' },
+        { name: 'caption', type: 'text', localized: true },
       ],
     },
   ],

@@ -1,24 +1,16 @@
 <script lang="ts">
   import type { SiteSettings } from '$lib/payload'
   import Banner from '../ui/Banner.svelte'
+  import { localizeHref } from '$lib/utils'
 
   type Props = {
     settings: SiteSettings
+    locale: string
   }
 
-  let { settings }: Props = $props()
+  let { settings, locale }: Props = $props()
 
-  const defaultFooterLinks = [
-    { label: 'Wat is het', href: '#wat-is-een-johnnie' },
-    { label: 'Vind een frituur', href: '#vind-een-frituur' },
-    { label: 'Social', href: '#social' },
-    { label: 'Join', href: '#over-frituurbakkers' },
-    { label: 'Doe een Johnnie', href: '#vind-een-frituur' }
-  ]
-
-  const footerLinks = $derived(
-    settings.footerLinks?.length ? settings.footerLinks : defaultFooterLinks
-  )
+  const footerLinks = $derived(settings.footerLinks ?? [])
 </script>
 
 <footer>
@@ -38,7 +30,7 @@
       class="max-w-5xl mx-auto px-4 py-12 flex flex-col md:flex-row items-center justify-between gap-4"
     >
       <!-- Logo -->
-      <a href="/" class="shrink-0">
+      <a href="/{locale}" class="shrink-0">
         {#if settings.logo && typeof settings.logo === 'object' && settings.logo.url}
           <img src={settings.logo.url} alt="Here's Johnny" class="h-8 w-auto brightness-0 invert" />
         {:else}
@@ -52,7 +44,7 @@
           {#each footerLinks as link}
             <li>
               <a
-                href={link.href}
+                href={localizeHref(link.href, locale)}
                 class="text-white/60 font-body text-xs uppercase tracking-widest
                        hover:text-white transition-colors"
               >

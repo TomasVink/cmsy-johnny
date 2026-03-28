@@ -10,9 +10,9 @@ export const SocialBlock: Block = {
       defaultValue: 'social',
       admin: { description: 'HTML anchor id for nav linking' }
     },
-    { name: 'title', type: 'textarea', required: true },
-    { name: 'subtitle', type: 'text' },
-    { name: 'description', type: 'textarea' },
+    { name: 'title', type: 'textarea', required: true, localized: true },
+    { name: 'subtitle', type: 'text', localized: true },
+    { name: 'description', type: 'textarea', localized: true },
     {
       name: 'accounts',
       type: 'array',

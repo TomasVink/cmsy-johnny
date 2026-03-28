@@ -19,10 +19,11 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
-      url: ({ data }) => {
+      url: ({ data, locale }) => {
         const webURL = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:5173'
         const slug = data?.slug as string | undefined
-        return `${webURL}/${slug ?? ''}`
+        const lang = (locale as unknown as string | undefined) ?? 'nl'
+        return slug === 'home' ? `${webURL}/${lang}` : `${webURL}/${lang}/${slug ?? ''}`
       },
     },
   },
@@ -31,6 +32,7 @@ export const Pages: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'slug',
@@ -61,8 +63,8 @@ export const Pages: CollectionConfig = {
       name: 'seo',
       type: 'group',
       fields: [
-        { name: 'title', type: 'text' },
-        { name: 'description', type: 'textarea' },
+        { name: 'title', type: 'text', localized: true },
+        { name: 'description', type: 'textarea', localized: true },
       ],
     },
   ],

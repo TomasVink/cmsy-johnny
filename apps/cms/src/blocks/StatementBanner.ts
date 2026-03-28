@@ -8,14 +8,16 @@ export const StatementBannerBlock: Block = {
       name: 'headline',
       type: 'text',
       required: true,
+      localized: true,
       admin: {
-        description: 'e.g. "ZO SIMPEL DAT HET GENIAAL IS.", add *example text* to hightlight.',
+        description: 'Large headline text. Wrap words in *asterisks* to highlight them.',
       },
     },
     {
       name: 'subtitle',
       type: 'text',
-      admin: { description: 'e.g. "FRIET ✦ PEPERSAUS ✦ CERVELA ✦ CRISPY UITJES"' },
+      localized: true,
+      admin: { description: 'Optional tagline below the headline, e.g. "FRIES ✦ PEPPER SAUCE ✦ CERVELA ✦ CRISPY ONIONS"' },
     },
     {
       name: 'image',

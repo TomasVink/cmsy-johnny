@@ -96,14 +96,14 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('nl' | 'fr') | ('nl' | 'fr')[];
   globals: {
     'site-settings': SiteSetting;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
-  locale: null;
+  locale: 'nl' | 'fr';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -315,6 +315,18 @@ export interface Page {
             ctaLabel?: string | null;
             disclaimer?: string | null;
             thankYou: string;
+            /**
+             * Used as both label and placeholder for each field. Leave empty to use the default.
+             */
+            labels?: {
+              frituurName?: string | null;
+              name?: string | null;
+              address?: string | null;
+              postcode?: string | null;
+              city?: string | null;
+              phone?: string | null;
+              email?: string | null;
+            };
             id?: string | null;
             blockName?: string | null;
             blockType: 'signup';
@@ -420,6 +432,7 @@ export interface Export {
   page?: number | null;
   sort?: string | null;
   sortOrder?: ('asc' | 'desc') | null;
+  locale?: ('all' | 'nl' | 'fr') | null;
   drafts?: ('yes' | 'no') | null;
   selectionToUse?: ('currentSelection' | 'currentFilters' | 'all') | null;
   fields?: string[] | null;
@@ -815,6 +828,17 @@ export interface PagesSelect<T extends boolean = true> {
               ctaLabel?: T;
               disclaimer?: T;
               thankYou?: T;
+              labels?:
+                | T
+                | {
+                    frituurName?: T;
+                    name?: T;
+                    address?: T;
+                    postcode?: T;
+                    city?: T;
+                    phone?: T;
+                    email?: T;
+                  };
               id?: T;
               blockName?: T;
             };
@@ -913,6 +937,7 @@ export interface ExportsSelect<T extends boolean = true> {
   page?: T;
   sort?: T;
   sortOrder?: T;
+  locale?: T;
   drafts?: T;
   selectionToUse?: T;
   fields?: T;

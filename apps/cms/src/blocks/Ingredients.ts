@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { localeDefault } from '@/utils/localeDefault'
 
 export const IngredientsBlock: Block = {
   slug: 'ingredients',
@@ -7,12 +8,13 @@ export const IngredientsBlock: Block = {
     {
       name: 'sectionId',
       type: 'text',
-      defaultValue: 'wat-is-een-johnnie',
+      localized: true,
+      defaultValue: localeDefault('wat-is-een-johnnie', 'c-est-quoi'),
       admin: { description: 'HTML anchor id for nav linking' },
     },
-    { name: 'title', type: 'textarea', required: true },
-    { name: 'subtitle', type: 'text' },
-    { name: 'description', type: 'textarea' },
+    { name: 'title', type: 'textarea', required: true, localized: true },
+    { name: 'subtitle', type: 'text', localized: true },
+    { name: 'description', type: 'textarea', localized: true },
     {
       name: 'items',
       type: 'array',
@@ -21,8 +23,8 @@ export const IngredientsBlock: Block = {
       maxRows: 8,
       fields: [
         { name: 'number', type: 'text', required: true, admin: { description: 'e.g. "01"' } },
-        { name: 'title', type: 'text', required: true },
-        { name: 'description', type: 'textarea' },
+        { name: 'title', type: 'text', required: true, localized: true },
+        { name: 'description', type: 'textarea', localized: true },
       ],
     },
     {
