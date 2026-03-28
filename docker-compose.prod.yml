@@ -85,6 +85,9 @@ services:
       - cms
       - web
     # No ports mapping — Coolify's Traefik routes traffic to this container via labels.
+    networks:
+      - default  # talks to cms:3000 and web:3001
+      - coolify  # Traefik can reach it
     restart: unless-stopped
 
 networks:
