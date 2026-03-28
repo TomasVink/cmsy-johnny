@@ -81,7 +81,8 @@ export default buildConfig({
           s3Storage({
             collections: {
               media: {
-                prefix: process.env.NEXT_PUBLIC_PROJECT_SLUG
+                prefix: process.env.NEXT_PUBLIC_PROJECT_SLUG,
+                disableLocalStorage: true
               }
             },
             bucket: process.env.S3_BUCKET!,
