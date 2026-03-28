@@ -29,7 +29,7 @@ export async function GET(request: Request) {
       code,
       client_id: process.env.LOGTO_APP_ID!,
       client_secret: process.env.LOGTO_APP_SECRET!,
-      redirect_uri: `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/oauth/logto/callback`,
+      redirect_uri: `${process.env.NEXT_PUBLIC_ADMIN_URL || process.env.NEXT_PUBLIC_SERVER_URL}/api/users/oauth/logto/callback`,
     }),
   })
 
@@ -91,7 +91,7 @@ export async function GET(request: Request) {
   const rawReturn = cookieStore.get('logto_return_to')?.value ?? ''
   const returnPath = rawReturn.startsWith('/admin') ? rawReturn : '/admin'
 
-  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || request.url
+  const serverUrl = process.env.NEXT_PUBLIC_ADMIN_URL || process.env.NEXT_PUBLIC_SERVER_URL || request.url
   const response = NextResponse.redirect(new URL(returnPath, serverUrl))
   response.cookies.delete('logto_oauth_state')
   response.cookies.delete('logto_return_to')
