@@ -67,8 +67,11 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY:-}
       S3_REGION: ${S3_REGION:-auto}
       S3_ENDPOINT: ${S3_ENDPOINT:-}
+    labels:
+      - traefik.enable=false
     networks:
       - default
+      - coolify  # needed to reach the shared Coolify PostgreSQL instance
     restart: unless-stopped
 
   web:
