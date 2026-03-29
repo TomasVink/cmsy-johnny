@@ -33,8 +33,8 @@ export const SocialBlock: Block = {
             { label: 'YouTube', value: 'youtube' }
           ]
         },
-        { name: 'handle', type: 'text', required: true },
-        { name: 'url', type: 'text', required: true }
+        { name: 'handle', type: 'text', required: true, localized: true },
+        { name: 'url', type: 'text', required: true, localized: true }
       ]
     }
   ]
