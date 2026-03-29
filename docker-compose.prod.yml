@@ -71,7 +71,7 @@ services:
       - traefik.enable=false
     networks:
       - default
-      - coolify  # needed to reach the shared Coolify PostgreSQL instance
+      - coolify # needed to reach the shared Coolify PostgreSQL instance
     restart: unless-stopped
 
   web:
@@ -83,6 +83,7 @@ services:
       PUBLIC_PAYLOAD_URL: ${PUBLIC_DOMAIN}
       # Internal Docker network URL — used for SSR fetches, never hits nginx
       PAYLOAD_INTERNAL_URL: http://cms:3000
+      PUBLIC_HERE_API_KEY: ${PUBLIC_HERE_API_KEY}
     depends_on:
       - cms
     restart: unless-stopped
@@ -96,10 +97,10 @@ services:
       - web
     # No ports mapping — Coolify's Traefik routes traffic to this container via labels.
     expose:
-      - "80"
+      - '80'
     networks:
-      - default  # talks to cms:3000 and web:3001
-      - coolify  # Traefik can reach it
+      - default # talks to cms:3000 and web:3001
+      - coolify # Traefik can reach it
     restart: unless-stopped
 
 networks:
