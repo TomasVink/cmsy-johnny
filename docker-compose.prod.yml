@@ -83,7 +83,7 @@ services:
       PUBLIC_PAYLOAD_URL: ${PUBLIC_DOMAIN}
       # Internal Docker network URL — used for SSR fetches, never hits nginx
       PAYLOAD_INTERNAL_URL: http://cms:3000
-      PUBLIC_HERE_API_KEY: ${PUBLIC_HERE_API_KEY}
+      PUBLIC_HERE_API_KEY: ${PUBLIC_HERE_API_KEY:-}
     depends_on:
       - cms
     restart: unless-stopped
@@ -96,6 +96,10 @@ services:
       - cms
       - web
     # No ports mapping — Coolify's Traefik routes traffic to this container via labels.
+    # Project-specific service name prevents Traefik from merging nginx containers
+    # across stacks when multiple projects run on the same Coolify server.
+    labels:
+      - traefik.http.services.${NEXT_PUBLIC_PROJECT_SLUG:-default}-nginx.loadbalancer.server.port=80
     expose:
       - '80'
     networks:
