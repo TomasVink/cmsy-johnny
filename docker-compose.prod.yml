@@ -102,7 +102,7 @@ services:
     # Project-specific service name prevents Traefik from merging nginx containers
     # across stacks when multiple projects run on the same Coolify server.
     labels:
-      - traefik.http.services.${NEXT_PUBLIC_PROJECT_SLUG:-default}-nginx.loadbalancer.server.port=80
+      - traefik.http.services.johnny-nginx.loadbalancer.server.port=80
     expose:
       - '80'
     networks:
