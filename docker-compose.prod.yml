@@ -44,6 +44,7 @@
 
 services:
   cms:
+    container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-cms
     build:
       context: .
       dockerfile: apps/cms/Dockerfile
@@ -75,6 +76,7 @@ services:
     restart: unless-stopped
 
   web:
+    container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-web
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -89,6 +91,7 @@ services:
     restart: unless-stopped
 
   nginx:
+    container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-nginx
     build:
       context: .
       dockerfile: nginx/Dockerfile
