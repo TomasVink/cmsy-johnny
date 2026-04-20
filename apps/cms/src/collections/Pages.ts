@@ -7,13 +7,14 @@ import { LocationsBlock } from '../blocks/Locations'
 import { SignupBlock } from '../blocks/Signup'
 import { SocialBlock } from '../blocks/Social'
 import { TickerBannerBlock } from '../blocks/TickerBanner'
-import { CheckerDivider } from '@/blocks/CheckerDivider'
+import { CheckerDivider } from '../blocks/CheckerDivider'
 import { PolaroidsBlock } from '../blocks/Polaroids'
+import { MapBlock } from '../blocks/Map'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
-    read: () => true,
+    read: () => true
   },
   admin: {
     useAsTitle: 'title',
@@ -24,15 +25,15 @@ export const Pages: CollectionConfig = {
         const slug = data?.slug as string | undefined
         const lang = (locale as unknown as string | undefined) ?? 'nl'
         return slug === 'home' ? `${webURL}/${lang}` : `${webURL}/${lang}/${slug ?? ''}`
-      },
-    },
+      }
+    }
   },
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
-      localized: true,
+      localized: true
     },
     {
       name: 'slug',
@@ -40,8 +41,8 @@ export const Pages: CollectionConfig = {
       required: true,
       unique: true,
       admin: {
-        description: 'URL-friendly identifier, e.g. "home" or "about".',
-      },
+        description: 'URL-friendly identifier, e.g. "home" or "about".'
+      }
     },
     {
       name: 'layout',
@@ -57,15 +58,16 @@ export const Pages: CollectionConfig = {
         TickerBannerBlock,
         CheckerDivider,
         PolaroidsBlock,
-      ],
+        MapBlock
+      ]
     },
     {
       name: 'seo',
       type: 'group',
       fields: [
         { name: 'title', type: 'text', localized: true },
-        { name: 'description', type: 'textarea', localized: true },
-      ],
-    },
-  ],
+        { name: 'description', type: 'textarea', localized: true }
+      ]
+    }
+  ]
 }

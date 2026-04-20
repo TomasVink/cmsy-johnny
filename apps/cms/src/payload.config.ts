@@ -69,8 +69,10 @@ export default buildConfig({
       collections: [
         {
           slug: 'frituur-applications',
-          import: false,
           export: {
+            disableJobsQueue: true
+          },
+          import: {
             disableJobsQueue: true
           }
         }

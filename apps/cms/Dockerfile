@@ -22,6 +22,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Set here to avoid cross-env (which requires node) — matches the build script's values
 ENV NODE_OPTIONS="--no-deprecation --max-old-space-size=2048"
 
+# NEXT_PUBLIC_* vars used in 'use client' components are baked in at build time.
+ARG NEXT_PUBLIC_HERE_API_KEY
+ENV NEXT_PUBLIC_HERE_API_KEY=$NEXT_PUBLIC_HERE_API_KEY
+
 WORKDIR /app/apps/cms
 RUN ./node_modules/.bin/next build
 

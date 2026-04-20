@@ -10,6 +10,7 @@
   import Banner from "./ui/Banner.svelte";
   import Signup from "./sections/Signup.svelte";
   import Polaroids from "./sections/Polaroids.svelte";
+  import Map from "./sections/Map.svelte";
 
   type Props = {
     blocks: Page["layout"];
@@ -42,6 +43,8 @@
       />
     {:else if block.blockType === "polaroids"}
       <Polaroids {block} />
+    {:else if block.blockType === "map"}
+      <Map {block} />
     {:else if block.blockType === "checker-divider"}
       <Banner variant={block.variant ?? undefined} />
     {/if}

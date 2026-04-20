@@ -25,6 +25,9 @@
 #   PAYLOAD_SECRET   Random secret: openssl rand -hex 32
 #   PUBLIC_DOMAIN    Full public URL, e.g. https://my-project.cmsy.digitalestrateeg.com
 #
+# Optional (HERE Geocoding — address autocomplete in the CMS):
+#   PUBLIC_HERE_API_KEY   (mapped to NEXT_PUBLIC_HERE_API_KEY at build time)
+#
 # Optional (S3 media storage):
 #   S3_BUCKET, S3_ACCESS_KEY, S3_SECRET_KEY, S3_REGION, S3_ENDPOINT
 #
@@ -48,6 +51,8 @@ services:
     build:
       context: .
       dockerfile: apps/cms/Dockerfile
+      args:
+        NEXT_PUBLIC_HERE_API_KEY: ${PUBLIC_HERE_API_KEY:-}
     environment:
       DATABASE_URI: ${DATABASE_URI}
       PAYLOAD_SECRET: ${PAYLOAD_SECRET}

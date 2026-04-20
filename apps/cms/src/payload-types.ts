@@ -387,6 +387,18 @@ export interface Page {
             blockName?: string | null;
             blockType: 'polaroids';
           }
+        | {
+            /**
+             * HTML anchor id for nav linking
+             */
+            sectionId?: string | null;
+            title: string;
+            subtitle?: string | null;
+            description?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'map';
+          }
       )[]
     | null;
   seo?: {
@@ -403,20 +415,23 @@ export interface Page {
 export interface FrituurApplication {
   id: number;
   frituurName: string;
-  name: string;
+  name?: string | null;
   address?: string | null;
   postcode?: string | null;
   city?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  urlType?: ('website' | 'instagram' | 'facebook' | 'tiktok') | null;
+  url?: string | null;
+  handle?: string | null;
+  visible?: boolean | null;
   /**
-   * Auto-filled via HERE API when the address is entered on the website
+   * Auto-filled via HERE API when the address is entered
    */
   gps?: {
     lat?: number | null;
     lng?: number | null;
   };
-  phone?: string | null;
-  email: string;
-  visible?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -894,6 +909,16 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        map?:
+          | T
+          | {
+              sectionId?: T;
+              title?: T;
+              subtitle?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   seo?:
     | T
@@ -914,15 +939,18 @@ export interface FrituurApplicationsSelect<T extends boolean = true> {
   address?: T;
   postcode?: T;
   city?: T;
+  phone?: T;
+  email?: T;
+  urlType?: T;
+  url?: T;
+  handle?: T;
+  visible?: T;
   gps?:
     | T
     | {
         lat?: T;
         lng?: T;
       };
-  phone?: T;
-  email?: T;
-  visible?: T;
   updatedAt?: T;
   createdAt?: T;
 }
