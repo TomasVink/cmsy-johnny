@@ -18,7 +18,7 @@
 #
 # Required environment variables (set in Coolify's Environment tab):
 #
-#   DATABASE_URI     Full connection string to the project database, e.g.:
+#   DATABASE_URI     Full connection string to an external PostgreSQL database, e.g.:
 #                    postgresql://postgres:pass@postgresql-abc123:5432/payload-myproject
 #                    Use the *internal* URL from Coolify — stays on the Docker network.
 #
@@ -43,36 +43,17 @@
 #   NEXT_PUBLIC_CMS_PLATFORM_URL, NEXT_PUBLIC_PROJECT_SLUG
 
 services:
-  postgres:
-    image: postgres:18-alpine
-    container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: cms
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    networks:
-      - default
-    restart: unless-stopped
-
   cms:
     container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-cms
     build:
       context: .
       dockerfile: apps/cms/Dockerfile
     environment:
-      DATABASE_URI: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/cms
+      DATABASE_URI: ${DATABASE_URI}
       PAYLOAD_SECRET: ${PAYLOAD_SECRET}
-      NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
-      NEXT_PUBLIC_WEB_URL: ${NEXT_PUBLIC_WEB_URL}
+      NEXT_PUBLIC_SERVER_URL: ${PUBLIC_DOMAIN}
+      NEXT_PUBLIC_WEB_URL: ${PUBLIC_DOMAIN}
       # Optional
-      NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-}
       LOGTO_ENDPOINT: ${LOGTO_ENDPOINT:-}
       LOGTO_APP_ID: ${LOGTO_APP_ID:-}
       LOGTO_APP_SECRET: ${LOGTO_APP_SECRET:-}
@@ -86,9 +67,12 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY:-}
       S3_REGION: ${S3_REGION:-auto}
       S3_ENDPOINT: ${S3_ENDPOINT:-}
-    depends_on:
-      postgres:
-        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO /dev/null http://localhost:3000/api/health || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
     networks:
       - default
     restart: unless-stopped
@@ -103,7 +87,6 @@ services:
       PUBLIC_PAYLOAD_URL: ${PUBLIC_DOMAIN}
       # Internal Docker network URL — used for SSR fetches, never hits nginx
       PAYLOAD_INTERNAL_URL: http://cms:3000
-      PUBLIC_HERE_API_KEY: ${PUBLIC_HERE_API_KEY:-}
     depends_on:
       - cms
     restart: unless-stopped
@@ -126,9 +109,6 @@ services:
       - default # talks to cms:3000 and web:3001
       - coolify # Traefik can reach it
     restart: unless-stopped
-
-volumes:
-  postgres_data:
 
 networks:
   default: {}
