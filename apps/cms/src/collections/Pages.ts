@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { purgePageCache } from '../lib/bunny'
 import { HeroBlock } from '../blocks/Hero'
 import { IngredientsBlock } from '../blocks/Ingredients'
 import { PhotoStripBlock } from '../blocks/PhotoStrip'
@@ -15,6 +16,10 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
     read: () => true
+  },
+  hooks: {
+    afterChange: [({ doc }) => purgePageCache(doc.slug)],
+    afterDelete: [({ doc }) => purgePageCache(doc.slug)],
   },
   admin: {
     useAsTitle: 'title',

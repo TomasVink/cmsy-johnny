@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { purgeAllCache } from '../lib/bunny'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -6,6 +7,9 @@ export const SiteSettings: GlobalConfig = {
   access: {
     read: () => true,
     update: ({ req }) => Boolean(req.user)
+  },
+  hooks: {
+    afterChange: [() => purgeAllCache()],
   },
   admin: {
     group: 'Settings'
