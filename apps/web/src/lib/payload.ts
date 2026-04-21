@@ -26,6 +26,7 @@ export type TickerBannerBlock = Extract<LayoutBlock, { blockType: 'ticker-banner
 export type SignupBlock = Extract<LayoutBlock, { blockType: 'signup' }>
 export type PolaroidsBlock = Extract<LayoutBlock, { blockType: 'polaroids' }>
 export type MapBlock = Extract<LayoutBlock, { blockType: 'map' }>
+export type ToolkitBlock = Extract<LayoutBlock, { blockType: 'toolkit' }>
 
 export type PaginatedDocs<T> = {
   docs: T[]

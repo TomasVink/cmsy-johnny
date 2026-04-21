@@ -101,7 +101,7 @@ export default buildConfig({
   ],
 
   typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts')
+    outputFile: path.resolve(dirname, '../../../packages/payload-types/src/index.ts')
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

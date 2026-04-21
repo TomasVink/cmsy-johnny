@@ -11,6 +11,7 @@ import { TickerBannerBlock } from '../blocks/TickerBanner'
 import { CheckerDivider } from '../blocks/CheckerDivider'
 import { PolaroidsBlock } from '../blocks/Polaroids'
 import { MapBlock } from '../blocks/Map'
+import { Toolkit } from '../blocks/Toolkit'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -19,7 +20,7 @@ export const Pages: CollectionConfig = {
   },
   hooks: {
     afterChange: [({ doc }) => purgePageCache(doc.slug)],
-    afterDelete: [({ doc }) => purgePageCache(doc.slug)],
+    afterDelete: [({ doc }) => purgePageCache(doc.slug)]
   },
   admin: {
     useAsTitle: 'title',
@@ -63,7 +64,8 @@ export const Pages: CollectionConfig = {
         TickerBannerBlock,
         CheckerDivider,
         PolaroidsBlock,
-        MapBlock
+        MapBlock,
+        Toolkit
       ]
     },
     {

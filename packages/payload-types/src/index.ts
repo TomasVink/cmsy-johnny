@@ -315,6 +315,8 @@ export interface Page {
             ctaLabel?: string | null;
             disclaimer?: string | null;
             thankYou: string;
+            thankYouLink?: string | null;
+            thankYouLinkText?: string | null;
             /**
              * Used as both label and placeholder for each field. Leave empty to use the default.
              */
@@ -398,6 +400,19 @@ export interface Page {
             id?: string | null;
             blockName?: string | null;
             blockType: 'map';
+          }
+        | {
+            title: string;
+            subtitle?: string | null;
+            description?: string | null;
+            items: {
+              title: string;
+              file: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'toolkit';
           }
       )[]
     | null;
@@ -843,6 +858,8 @@ export interface PagesSelect<T extends boolean = true> {
               ctaLabel?: T;
               disclaimer?: T;
               thankYou?: T;
+              thankYouLink?: T;
+              thankYouLinkText?: T;
               labels?:
                 | T
                 | {
@@ -916,6 +933,22 @@ export interface PagesSelect<T extends boolean = true> {
               title?: T;
               subtitle?: T;
               description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        toolkit?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              description?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    file?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };

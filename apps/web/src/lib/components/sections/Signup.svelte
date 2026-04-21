@@ -202,8 +202,16 @@
         {block.description}
       </Description>
       {#if status === 'success'}
-        <div class="bg-brand-dark text-white p-4 text-center">
+        <div class="text-center">
           {block.thankYou}
+          {#if block.thankYouLink && block.thankYouLinkText}
+            <a
+              class="w-full bg-brand-red text-white font-display text-sm font-bold uppercase
+                   tracking-widest py-4 hover:bg-brand-dark cursor-pointer
+                   flex items-center justify-center mt-4"
+              href={block.thankYouLink}>{block.thankYouLinkText}</a
+            >
+          {/if}
         </div>
       {:else}
         <form onsubmit={handleSubmit} class="space-y-4" novalidate>
