@@ -56,7 +56,8 @@ export const SignupBlock: Block = {
     },
     {
       name: 'thankYouLinkText',
-      type: 'text'
+      type: 'text',
+      localized: true
     },
     {
       name: 'labels',

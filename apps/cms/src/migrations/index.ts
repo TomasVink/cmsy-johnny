@@ -4,6 +4,7 @@ import * as migration_20260329_191634 from './20260329_191634';
 import * as migration_20260420_125646_map from './20260420_125646_map';
 import * as migration_20260421_085311_toolkit from './20260421_085311_toolkit';
 import * as migration_20260421_120647_more_localization from './20260421_120647_more_localization';
+import * as migration_20260421_121137_localize_sign_up_link_text from './20260421_121137_localize_sign_up_link_text';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260421_120647_more_localization.up,
     down: migration_20260421_120647_more_localization.down,
-    name: '20260421_120647_more_localization'
+    name: '20260421_120647_more_localization',
+  },
+  {
+    up: migration_20260421_121137_localize_sign_up_link_text.up,
+    down: migration_20260421_121137_localize_sign_up_link_text.down,
+    name: '20260421_121137_localize_sign_up_link_text'
   },
 ];
