@@ -19,6 +19,7 @@ export const SiteSettings: GlobalConfig = {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
+      localized: true,
       admin: { description: 'Main site logo' }
     },
     {
