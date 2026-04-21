@@ -3,6 +3,7 @@ import * as migration_20260328_111033 from './20260328_111033';
 import * as migration_20260329_191634 from './20260329_191634';
 import * as migration_20260420_125646_map from './20260420_125646_map';
 import * as migration_20260421_085311_toolkit from './20260421_085311_toolkit';
+import * as migration_20260421_120647_more_localization from './20260421_120647_more_localization';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260421_085311_toolkit.up,
     down: migration_20260421_085311_toolkit.down,
-    name: '20260421_085311_toolkit'
+    name: '20260421_085311_toolkit',
+  },
+  {
+    up: migration_20260421_120647_more_localization.up,
+    down: migration_20260421_120647_more_localization.down,
+    name: '20260421_120647_more_localization'
   },
 ];

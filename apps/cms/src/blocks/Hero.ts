@@ -9,13 +9,14 @@ export const HeroBlock: Block = {
       type: 'upload',
       relationTo: 'media',
       required: true,
-      admin: { description: 'Main headline image' },
+      localized: true,
+      admin: { description: 'Main headline image' }
     },
     {
       name: 'tagline',
       type: 'text',
       localized: true,
-      admin: { description: 'Subtitle line, e.g. "FRIES · PEPPER SAUCE · CERVELA · CRISPY ONIONS"' },
+      admin: { description: 'Subtitle line, e.g. "FRIES · PEPPER SAUCE · CERVELA · CRISPY ONIONS"' }
     },
     {
       name: 'ctaButtons',
@@ -23,17 +24,17 @@ export const HeroBlock: Block = {
       maxRows: 3,
       fields: [
         { name: 'label', type: 'text', required: true, localized: true },
-        { name: 'href', type: 'text', required: true },
+        { name: 'href', type: 'text', required: true, localized: true },
         {
           name: 'variant',
           type: 'select',
           defaultValue: 'outline',
           options: [
             { label: 'Outline', value: 'outline' },
-            { label: 'Solid', value: 'solid' },
-          ],
-        },
-      ],
-    },
-  ],
+            { label: 'Solid', value: 'solid' }
+          ]
+        }
+      ]
+    }
+  ]
 }

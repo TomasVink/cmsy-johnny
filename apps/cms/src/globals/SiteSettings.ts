@@ -9,7 +9,7 @@ export const SiteSettings: GlobalConfig = {
     update: ({ req }) => Boolean(req.user)
   },
   hooks: {
-    afterChange: [() => purgeAllCache()],
+    afterChange: [() => purgeAllCache()]
   },
   admin: {
     group: 'Settings'
@@ -28,7 +28,7 @@ export const SiteSettings: GlobalConfig = {
       maxRows: 8,
       fields: [
         { name: 'label', type: 'text', required: true, localized: true },
-        { name: 'href', type: 'text', required: true }
+        { name: 'href', type: 'text', required: true, localized: true }
       ]
     },
     {
@@ -37,7 +37,7 @@ export const SiteSettings: GlobalConfig = {
       label: 'Nav CTA Button',
       fields: [
         { name: 'label', type: 'text', localized: true },
-        { name: 'href', type: 'text' }
+        { name: 'href', type: 'text', localized: true }
       ]
     },
     {
@@ -47,7 +47,7 @@ export const SiteSettings: GlobalConfig = {
       maxRows: 8,
       fields: [
         { name: 'label', type: 'text', required: true, localized: true },
-        { name: 'href', type: 'text', required: true }
+        { name: 'href', type: 'text', required: true, localized: true }
       ]
     },
     {
