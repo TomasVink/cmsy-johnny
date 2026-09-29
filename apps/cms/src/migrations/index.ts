@@ -6,6 +6,7 @@ import * as migration_20260421_085311_toolkit from './20260421_085311_toolkit';
 import * as migration_20260421_120647_more_localization from './20260421_120647_more_localization';
 import * as migration_20260421_121137_localize_sign_up_link_text from './20260421_121137_localize_sign_up_link_text';
 import * as migration_20260421_134344_localize_nav_logo from './20260421_134344_localize_nav_logo';
+import * as migration_20260820_090000_media_webp_hero from './20260820_090000_media_webp_hero';
 
 export const migrations = [
   {
@@ -47,5 +48,10 @@ export const migrations = [
     up: migration_20260421_134344_localize_nav_logo.up,
     down: migration_20260421_134344_localize_nav_logo.down,
     name: '20260421_134344_localize_nav_logo'
+  },
+  {
+    up: migration_20260820_090000_media_webp_hero.up,
+    down: migration_20260820_090000_media_webp_hero.down,
+    name: '20260820_090000_media_webp_hero',
   },
 ];

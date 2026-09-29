@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { env } from '$env/dynamic/public'
   import type { Media } from '@repo/payload-types'
+  import { mediaUrl } from '$lib/payload'
   import Section from '../ui/Section.svelte'
 
   // Local type until `bun payload generate:types` is run after adding the block to the CMS
@@ -21,13 +21,6 @@
   let { block }: Props = $props()
 
   let topIndex = $state<number | null>(1)
-
-  function imageUrl(img: number | Media): string | null {
-    if (typeof img === 'number') return null
-    if (img.url) return img.url.startsWith('http') ? img.url : `${env.PUBLIC_PAYLOAD_URL}${img.url}`
-    if (img.filename) return `${env.PUBLIC_PAYLOAD_URL}/api/media/file/${img.filename}`
-    return null
-  }
 
   // Per-card rotation and small vertical nudge for a natural scattered look
   const cardStyle: Array<{ rotation: number; ty: number }> = [
@@ -58,7 +51,7 @@
 <Section id={block.sectionId ?? 'polaroids'} class="bg-brand-red">
   <div class="polaroids-wrapper">
     {#each block.photos as photo, i}
-      {@const src = imageUrl(photo.image)}
+      {@const src = mediaUrl(photo.image, 'card')}
       {@const s = cardStyle[i % cardStyle.length]}
       {@const tx = getTx(i, block.photos.length)}
       {#if src}
@@ -72,7 +65,12 @@
         >
           <div class="polaroid-inner">
             <div class="polaroid-photo">
-              <img {src} alt={typeof photo.image === 'object' ? photo.image.alt : ''} />
+              <img
+                {src}
+                alt={typeof photo.image === 'object' ? photo.image.alt : ''}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div class="polaroid-caption">
               <span>{photo.title}</span>

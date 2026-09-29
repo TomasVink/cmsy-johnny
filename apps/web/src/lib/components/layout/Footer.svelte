@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SiteSettings } from '$lib/payload'
+  import { mediaUrl, mediaDimensions } from '$lib/payload'
   import Banner from '../ui/Banner.svelte'
   import { localizeHref } from '$lib/utils'
 
@@ -10,15 +11,22 @@
 
   let { settings, locale }: Props = $props()
 
+  const footerImageSrc = $derived(mediaUrl(settings.footerImage, 'tablet'))
+  const footerImageSize = $derived(mediaDimensions(settings.footerImage, 'tablet'))
+  const logoSrc = $derived(mediaUrl(settings.logo, 'tablet'))
   const footerLinks = $derived(settings.footerLinks ?? [])
 </script>
 
 <footer>
-  {#if settings.footerImage}
+  {#if footerImageSrc}
     <div class="bg-brand-red pt-12">
       <img
-        src={settings.footerImage?.url}
+        src={footerImageSrc}
         alt={settings.footerImage?.alt}
+        width={footerImageSize?.width}
+        height={footerImageSize?.height}
+        loading="lazy"
+        decoding="async"
         class="max-w-5xl mx-auto w-full"
       />
     </div>
@@ -31,8 +39,13 @@
     >
       <!-- Logo -->
       <a href="/{locale}" class="shrink-0">
-        {#if settings.logo && typeof settings.logo === 'object' && settings.logo.url}
-          <img src={settings.logo.url} alt="Here's Johnny" class="h-8 w-auto brightness-0 invert" />
+        {#if logoSrc}
+          <img
+            src={logoSrc}
+            alt="Here's Johnny"
+            loading="lazy"
+            class="h-8 w-auto brightness-0 invert"
+          />
         {:else}
           <span class="font-script text-white text-xl">Here's Johnny!</span>
         {/if}

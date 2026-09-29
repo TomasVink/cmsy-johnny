@@ -1,7 +1,8 @@
 <script lang="ts">
   import { env } from '$env/dynamic/public'
   import type { SignupBlock } from '$lib/payload'
-  import type { FrituurApplication, Media } from '@repo/payload-types'
+  import type { FrituurApplication } from '@repo/payload-types'
+  import { mediaUrl, mediaDimensions } from '$lib/payload'
   import Section from '../ui/Section.svelte'
   import SectionTitle from '../ui/SectionTitle.svelte'
   import Description from '../ui/Description.svelte'
@@ -174,14 +175,8 @@
     }
   }
 
-  function imageUrl(img: number | Media | null | undefined): string | null {
-    if (!img || typeof img === 'number') return null
-    if (img.url) return img.url.startsWith('http') ? img.url : `${env.PUBLIC_PAYLOAD_URL}${img.url}`
-    if (img.filename) return `${env.PUBLIC_PAYLOAD_URL}/api/media/file/${img.filename}`
-    return null
-  }
-
-  const imgSrc = $derived(imageUrl(block.image))
+  const imgSrc = $derived(mediaUrl(block.image, 'tablet'))
+  const imgSize = $derived(mediaDimensions(block.image, 'tablet'))
   const altText = $derived(typeof block.image === 'object' && block.image ? block.image.alt : '')
 </script>
 
@@ -192,7 +187,15 @@
     <!-- Image -->
     {#if imgSrc}
       <div class="hidden md:block flex-1">
-        <img src={imgSrc} alt={altText} class="w-full object-cover rounded-2xl" />
+        <img
+          src={imgSrc}
+          alt={altText}
+          width={imgSize?.width}
+          height={imgSize?.height}
+          loading="lazy"
+          decoding="async"
+          class="w-full object-cover rounded-2xl"
+        />
       </div>
     {/if}
 

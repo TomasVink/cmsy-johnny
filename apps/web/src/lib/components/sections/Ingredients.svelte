@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { env } from '$env/dynamic/public'
   import type { IngredientsBlock } from '$lib/payload'
-  import type { Media } from '@repo/payload-types'
+  import { mediaUrl, mediaDimensions } from '$lib/payload'
   import HardShadowFrame from '$lib/components/ui/HardShadowFrame.svelte'
   import Section from '../ui/Section.svelte'
   import SectionTitle from '../ui/SectionTitle.svelte'
@@ -10,14 +9,8 @@
   type Props = { block: IngredientsBlock }
   let { block }: Props = $props()
 
-  function imageUrl(img: number | Media | null | undefined): string | null {
-    if (!img || typeof img === 'number') return null
-    if (img.url) return img.url.startsWith('http') ? img.url : `${env.PUBLIC_PAYLOAD_URL}${img.url}`
-    if (img.filename) return `${env.PUBLIC_PAYLOAD_URL}/api/media/file/${img.filename}`
-    return null
-  }
-
-  const src = $derived(imageUrl(block.image))
+  const src = $derived(mediaUrl(block.image, 'tablet'))
+  const size = $derived(mediaDimensions(block.image, 'tablet'))
   const altText = $derived(typeof block.image === 'object' && block.image ? block.image.alt : '')
 </script>
 
@@ -29,7 +22,15 @@
     <!-- Image with hard shadow -->
     {#if src}
       <HardShadowFrame shadow="lg" class="bg-brand-cream-dark">
-        <img {src} alt={altText} class="w-full h-full object-cover block" />
+        <img
+          {src}
+          alt={altText}
+          width={size?.width}
+          height={size?.height}
+          loading="lazy"
+          decoding="async"
+          class="w-full h-full object-cover block"
+        />
       </HardShadowFrame>
     {:else}
       <!-- Placeholder when no image uploaded yet -->

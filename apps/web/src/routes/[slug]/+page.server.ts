@@ -1,4 +1,3 @@
-import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
 function detectLocale(acceptLanguage: string | null, cookie: string | undefined): 'nl' | 'fr' {
@@ -9,5 +8,9 @@ function detectLocale(acceptLanguage: string | null, cookie: string | undefined)
 
 export const load: PageServerLoad = ({ params, request, cookies }) => {
   const locale = detectLocale(request.headers.get('accept-language'), cookies.get('locale'))
-  redirect(302, `/${locale}/${params.slug}`)
+  // Per-visitor language decision — never cache it at the edge.
+  return new Response(null, {
+    status: 302,
+    headers: { Location: `/${locale}/${params.slug}`, 'Cache-Control': 'no-store' }
+  })
 }

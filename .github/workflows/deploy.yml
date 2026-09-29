@@ -1,0 +1,118 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+
+# nginx is not built here: docker-compose.prod.yml runs the stock nginx:alpine
+# image and injects the config via a Docker config, so a config change only
+# needs a redeploy (covered by the `config` filter below), never an image build.
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      cms: ${{ steps.filter.outputs.cms }}
+      web: ${{ steps.filter.outputs.web }}
+      config: ${{ steps.filter.outputs.config }}
+      owner: ${{ steps.owner.outputs.owner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lowercase owner
+        id: owner
+        run: echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            cms:
+              - 'apps/cms/**'
+              - 'packages/**'
+              - 'package.json'
+              - 'bun.lock'
+              - '.github/workflows/**'
+            web:
+              - 'apps/web/**'
+              - 'packages/**'
+              - 'package.json'
+              - 'bun.lock'
+              - '.github/workflows/**'
+            config:
+              - 'docker-compose.prod.yml'
+
+  build-cms:
+    needs: changes
+    if: needs.changes.outputs.cms == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/cms/Dockerfile
+          push: true
+          # Baked into the client bundle at build time — Coolify no longer builds
+          # this image, so the key has to come from a GitHub secret here.
+          build-args: |
+            NEXT_PUBLIC_HERE_API_KEY=${{ secrets.PUBLIC_HERE_API_KEY }}
+          tags: ghcr.io/${{ needs.changes.outputs.owner }}/cmsy-johnny-cms:latest
+          cache-from: type=gha,scope=cms
+          cache-to: type=gha,mode=max,scope=cms
+
+  build-web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          push: true
+          tags: ghcr.io/${{ needs.changes.outputs.owner }}/cmsy-johnny-web:latest
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web
+
+  deploy:
+    needs: [changes, build-cms, build-web]
+    # Run if at least one build succeeded and none failed, or if only the
+    # compose file changed (nginx config edits land there — nothing to build).
+    if: |
+      github.event_name == 'push' &&
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      (contains(needs.*.result, 'success') || needs.changes.outputs.config == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Coolify deploy
+        env:
+          WEBHOOK: ${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}
+          TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then
+            echo "COOLIFY_DEPLOY_WEBHOOK not set — skipping"
+            exit 0
+          fi
+          curl --fail-with-body -s -w "\nHTTP %{http_code}" -X GET \
+            -H "Authorization: Bearer $TOKEN" \
+            "$WEBHOOK"

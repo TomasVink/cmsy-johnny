@@ -1,11 +1,14 @@
 <script lang="ts">
   import type { HeroBlock } from '$lib/payload'
+  import { mediaUrl, mediaDimensions } from '$lib/payload'
   import Section from '../ui/Section.svelte'
 
   type Props = { block: HeroBlock }
   let { block }: Props = $props()
 
   const headlineMedia = $derived(typeof block.headline === 'object' ? block.headline : null)
+  const headlineSrc = $derived(mediaUrl(block.headline, 'tablet'))
+  const headlineSize = $derived(mediaDimensions(block.headline, 'tablet'))
 
   // Split tagline on "·" or "+" so separators can be rendered at reduced opacity
   const taglineParts = $derived(
@@ -31,11 +34,15 @@
     "
   />
 
-  <!-- Headline image (uploaded via CMS) -->
-  {#if headlineMedia}
+  <!-- Headline image (uploaded via CMS) — above the fold, so load it eagerly -->
+  {#if headlineSrc}
     <img
-      src={headlineMedia.url ?? ''}
-      alt={headlineMedia.alt ?? ''}
+      src={headlineSrc}
+      alt={headlineMedia?.alt ?? ''}
+      width={headlineSize?.width}
+      height={headlineSize?.height}
+      fetchpriority="high"
+      decoding="async"
       class="relative z-10 w-full max-w-146.5 mb-8 mx-auto"
     />
   {/if}

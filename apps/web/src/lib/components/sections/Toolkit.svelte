@@ -2,6 +2,7 @@
   import { env } from '$env/dynamic/public'
   import type { Media } from '@repo/payload-types'
   import type { ToolkitBlock } from '$lib/payload'
+  import { mediaUrl } from '$lib/payload'
   import Section from '../ui/Section.svelte'
   import SectionTitle from '../ui/SectionTitle.svelte'
   import Description from '../ui/Description.svelte'
@@ -9,6 +10,9 @@
   type Props = { block: ToolkitBlock }
   let { block }: Props = $props()
 
+  // Downloads deliberately stay on the origin rather than the CDN: handleDownload
+  // fetches the file into a blob, which needs a same-origin response. They also
+  // have to serve the original upload, not a resized webp preview.
   function fileUrl(file: number | Media): string | null {
     if (typeof file === 'number') return null
     if (file.url)
@@ -57,7 +61,13 @@
             class="flex items-center gap-4 my-2 text-xl hover:underline hover:text-brand-red"
           >
             {#if isImage(item.file)}
-              <img src={url} alt={item.title} class="w-24 h-24 object-cover rounded shrink-0" />
+              <img
+                src={mediaUrl(item.file, 'thumbnail')}
+                alt={item.title}
+                loading="lazy"
+                decoding="async"
+                class="w-24 h-24 object-cover rounded shrink-0"
+              />
             {/if}
             <span>{item.title}</span>
             <svg

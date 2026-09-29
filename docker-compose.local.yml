@@ -71,6 +71,9 @@ services:
     environment:
       # Public URL of the CMS — used in the browser for live preview and admin link
       PUBLIC_PAYLOAD_URL: ${PUBLIC_DOMAIN:-http://localhost}
+      # Optional — CDN base URL for media. Left empty locally so images are served
+      # from PUBLIC_PAYLOAD_URL and you test the same code path without a CDN.
+      PUBLIC_MEDIA_URL: ${PUBLIC_MEDIA_URL:-}
       # Internal Docker network URL — SSR requests stay on the internal network
       PAYLOAD_INTERNAL_URL: http://cms:3000
     depends_on:

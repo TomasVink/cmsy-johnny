@@ -23,7 +23,12 @@ export const load: LayoutServerLoad = async ({ params, request, cookies, url, fe
   }
 
   const locale = params.locale as Locale
-  cookies.set('locale', locale, { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' })
+  // Only write the cookie when it actually changes. A Set-Cookie on every page
+  // response makes the HTML uncacheable at the CDN edge (and risks handing one
+  // visitor's language preference to the next).
+  if (cookies.get('locale') !== locale) {
+    cookies.set('locale', locale, { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' })
+  }
 
   const settings = await getSiteSettings(locale, fetch)
   return { locale, settings }

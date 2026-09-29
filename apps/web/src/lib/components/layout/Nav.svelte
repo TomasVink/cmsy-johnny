@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SiteSettings } from '$lib/payload'
+  import { mediaUrl } from '$lib/payload'
   import Banner from '$lib/components/ui/Banner.svelte'
   import { localizeHref } from '$lib/utils'
   import { page } from '$app/stores'
@@ -13,6 +14,9 @@
 
   let menuOpen = $state(false)
 
+  // 'tablet' resizes on width only, so wide logos keep their aspect ratio.
+  // SVG logos have no generated sizes and fall through to the original file.
+  const logoSrc = $derived(mediaUrl(settings.logo, 'tablet'))
   const navLinks = $derived(settings.navLinks ?? [])
   const cta = $derived(settings.navCta)
 
@@ -31,8 +35,8 @@
     <div class="max-w-273.5 mx-auto px-10 flex items-center justify-between h-13">
       <!-- Logo -->
       <a href="/{locale}" class="shrink-0 leading-none">
-        {#if settings.logo && typeof settings.logo === 'object' && settings.logo.url}
-          <img src={settings.logo.url} alt="Here's Johnny!" class="h-10 w-auto" />
+        {#if logoSrc}
+          <img src={logoSrc} alt="Here's Johnny!" class="h-10 w-auto" />
         {:else}
           <!-- Fallback text logo while no image is uploaded -->
           <span class="font-script text-brand-dark text-2xl leading-none">Here's Johnny!</span>

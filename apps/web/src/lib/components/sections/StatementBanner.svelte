@@ -1,21 +1,14 @@
 <script lang="ts">
-  import { env } from '$env/dynamic/public'
   import type { StatementBannerBlock } from '$lib/payload'
-  import type { Media } from '@repo/payload-types'
+  import { mediaUrl, mediaDimensions } from '$lib/payload'
   import Section from '../ui/Section.svelte'
   import Banner from '../ui/Banner.svelte'
 
   type Props = { block: StatementBannerBlock }
   let { block }: Props = $props()
 
-  function imageUrl(img: number | Media | null | undefined): string | null {
-    if (!img || typeof img === 'number') return null
-    if (img.url) return img.url.startsWith('http') ? img.url : `${env.PUBLIC_PAYLOAD_URL}${img.url}`
-    if (img.filename) return `${env.PUBLIC_PAYLOAD_URL}/api/media/file/${img.filename}`
-    return null
-  }
-
-  const src = $derived(imageUrl(block.image))
+  const src = $derived(mediaUrl(block.image, 'tablet'))
+  const size = $derived(mediaDimensions(block.image, 'tablet'))
   const altText = $derived(typeof block.image === 'object' && block.image ? block.image.alt : '')
 
   function highlightStars(text: string): string {
@@ -45,7 +38,15 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 items-center gap-8">
       <!-- Product image -->
       {#if src}
-        <img {src} alt={altText} class="w-full object-contain drop-shadow-2xl" />
+        <img
+          {src}
+          alt={altText}
+          width={size?.width}
+          height={size?.height}
+          loading="lazy"
+          decoding="async"
+          class="w-full object-contain drop-shadow-2xl"
+        />
       {/if}
 
       <!-- Text content -->

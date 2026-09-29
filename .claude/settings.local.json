@@ -3,5 +3,9 @@
     "allow": [
       "Bash(docker compose:*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "svelte"
+  ],
+  "enableAllProjectMcpServers": true
 }

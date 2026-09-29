@@ -25,8 +25,10 @@
 #   PAYLOAD_SECRET   Random secret: openssl rand -hex 32
 #   PUBLIC_DOMAIN    Full public URL, e.g. https://my-project.cmsy.digitalestrateeg.com
 #
-# Optional (HERE Geocoding — address autocomplete in the CMS):
-#   PUBLIC_HERE_API_KEY   (mapped to NEXT_PUBLIC_HERE_API_KEY at build time)
+# Optional (HERE Geocoding — maps on the site, address autocomplete in the CMS):
+#   PUBLIC_HERE_API_KEY   Passed to the web container at runtime. The CMS needs the
+#                         same key baked in at image build time, so it is also a
+#                         GitHub secret consumed by .github/workflows/deploy.yml.
 #
 # Optional (S3 media storage):
 #   S3_BUCKET, S3_ACCESS_KEY, S3_SECRET_KEY, S3_REGION, S3_ENDPOINT
@@ -44,21 +46,30 @@
 #
 # Optional (cms-platform top bar):
 #   NEXT_PUBLIC_CMS_PLATFORM_URL, NEXT_PUBLIC_PROJECT_SLUG
+#
+# Optional (CDN — set alongside S3 to serve media from the edge instead of the CMS):
+#   PUBLIC_MEDIA_URL     Public base URL for media, e.g. https://heres-johnny.b-cdn.net
+#                        The frontend rewrites every image URL onto this host; Bunny
+#                        pulls from the CMS origin once, then serves from cache.
+#   BUNNY_API_KEY        Account API key (bunny.net → Account → API). Without it the
+#                        CMS purge hooks silently no-op and edits stay stale until
+#                        the edge TTL expires.
+#   BUNNY_PULLZONE_ID    Pull Zone ID — purged wholesale on a Site Settings change.
 
 services:
   cms:
     container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-cms
-    build:
-      context: .
-      dockerfile: apps/cms/Dockerfile
-      args:
-        NEXT_PUBLIC_HERE_API_KEY: ${PUBLIC_HERE_API_KEY:-}
+    # Built and pushed by .github/workflows/deploy.yml — Coolify only pulls.
+    # NEXT_PUBLIC_HERE_API_KEY is baked in at build time there, not here.
+    image: ghcr.io/tomasvink/cmsy-johnny-cms:latest
+    pull_policy: always
     environment:
       DATABASE_URI: ${DATABASE_URI}
       PAYLOAD_SECRET: ${PAYLOAD_SECRET}
-      NEXT_PUBLIC_SERVER_URL: ${PUBLIC_DOMAIN}
+      NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL:-${PUBLIC_DOMAIN}}
       NEXT_PUBLIC_WEB_URL: ${PUBLIC_DOMAIN}
       # Optional
+      NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-}
       LOGTO_ENDPOINT: ${LOGTO_ENDPOINT:-}
       LOGTO_APP_ID: ${LOGTO_APP_ID:-}
       LOGTO_APP_SECRET: ${LOGTO_APP_SECRET:-}
@@ -72,6 +83,8 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY:-}
       S3_REGION: ${S3_REGION:-auto}
       S3_ENDPOINT: ${S3_ENDPOINT:-}
+      BUNNY_API_KEY: ${BUNNY_API_KEY:-}
+      BUNNY_PULLZONE_ID: ${BUNNY_PULLZONE_ID:-}
     healthcheck:
       test: ['CMD-SHELL', 'wget -qO /dev/null http://localhost:3000/api/health || exit 1']
       interval: 10s
@@ -84,23 +97,33 @@ services:
 
   web:
     container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-web
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+    # Built and pushed by .github/workflows/deploy.yml — Coolify only pulls.
+    image: ghcr.io/tomasvink/cmsy-johnny-web:latest
+    pull_policy: always
     environment:
       # Browser-facing URL — used for live preview origin validation
       PUBLIC_PAYLOAD_URL: ${PUBLIC_DOMAIN}
+      # CDN base URL for media — browser image requests go here instead of the CMS.
+      # Bunny CDN pulls from the CMS on cache miss, then serves from edge.
+      # Falls back to PUBLIC_PAYLOAD_URL if not set.
+      PUBLIC_MEDIA_URL: ${PUBLIC_MEDIA_URL:-}
       # Internal Docker network URL — used for SSR fetches, never hits nginx
       PAYLOAD_INTERNAL_URL: http://cms:3000
+      # Read at runtime via $env/dynamic/public by the Map, Locations and Signup blocks
+      PUBLIC_HERE_API_KEY: ${PUBLIC_HERE_API_KEY:-}
     depends_on:
       - cms
     restart: unless-stopped
 
   nginx:
     container_name: ${NEXT_PUBLIC_PROJECT_SLUG:-}-nginx
-    build:
-      context: .
-      dockerfile: nginx/Dockerfile
+    # Use the stock nginx image — config is embedded below via Docker configs,
+    # so no custom image build is needed when nginx.conf changes.
+    # Keep this in sync with nginx.conf, which the local stack builds into an image.
+    image: nginx:alpine
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/conf.d/default.conf
     depends_on:
       - cms
       - web
@@ -114,6 +137,102 @@ services:
       - default # talks to cms:3000 and web:3001
       - coolify # Traefik can reach it
     restart: unless-stopped
+
+configs:
+  nginx_conf:
+    content: |
+      server {
+          listen 80;
+
+          # Re-resolve upstream hostnames via Docker's embedded DNS every 10 s.
+          # Without this nginx caches the IP at startup; if a container restarts
+          # and gets a new IP nginx can't reach it until nginx itself restarts.
+          resolver 127.0.0.11 valid=10s ipv6=off;
+
+          # Allow large media uploads
+          client_max_body_size 100M;
+
+          # Fail fast instead of hanging when an upstream is down
+          proxy_connect_timeout 5s;
+          proxy_read_timeout    60s;
+          proxy_send_timeout    60s;
+
+          # Pass real client IP and protocol from Coolify's Traefik proxy
+          proxy_set_header Host              $$host;
+          proxy_set_header X-Real-IP         $$remote_addr;
+          proxy_set_header X-Forwarded-For   $$proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $$http_x_forwarded_proto;
+
+          # ── Payload CMS paths ──────────────────────────────────────────────────────
+
+          # Admin UI
+          location /admin {
+              set $$cms http://cms:3000;
+              proxy_pass $$cms;
+          }
+
+          # Payload media files (S3-backed in production, local disk in dev).
+          # Uploading a replacement in the admin creates a new filename rather than
+          # overwriting, so a URL's bytes never change — safe to cache forever at the
+          # CDN edge and in the browser. This is the header Bunny obeys; without it
+          # every image request falls through to the CMS container.
+          # (Exception: scripts/regenerate-media.ts overwrites in place — purge the
+          # media pull zone after running it.)
+          location ^~ /api/media/file/ {
+              set $$cms http://cms:3000;
+              proxy_pass $$cms;
+              proxy_hide_header Cache-Control;
+              add_header Cache-Control "public, max-age=31536000, immutable" always;
+          }
+
+          # REST & GraphQL API
+          location /api {
+              set $$cms http://cms:3000;
+              proxy_pass $$cms;
+          }
+
+          # Next.js internals (chunks, HMR, RSC payloads)
+          location /_next {
+              set $$cms http://cms:3000;
+              proxy_pass $$cms;
+          }
+
+          # Payload media uploads (local disk storage)
+          location /media {
+              set $$cms http://cms:3000;
+              proxy_pass $$cms;
+              proxy_hide_header Cache-Control;
+              add_header Cache-Control "public, max-age=31536000, immutable" always;
+          }
+
+          # ── SvelteKit web app ──────────────────────────────────────────────────────
+
+          # Content-hashed immutable assets — safe to cache forever at CDN and browser
+          location ^~ /_app/immutable/ {
+              set $$web http://web:3001;
+              proxy_pass $$web;
+              proxy_http_version 1.1;
+              proxy_hide_header Cache-Control;
+              add_header Cache-Control "public, max-age=31536000, immutable" always;
+          }
+
+          # SvelteKit version file changes on every deploy — must never be cached
+          location = /_app/version.json {
+              set $$web http://web:3001;
+              proxy_pass $$web;
+              proxy_http_version 1.1;
+              proxy_hide_header Cache-Control;
+              add_header Cache-Control "no-cache" always;
+          }
+
+          location / {
+              set $$web http://web:3001;
+              proxy_pass $$web;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade    $$http_upgrade;
+              proxy_set_header Connection "upgrade";
+          }
+      }
 
 networks:
   default: {}
