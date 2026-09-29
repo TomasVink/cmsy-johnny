@@ -22,7 +22,18 @@ const useS3 = Boolean(process.env.S3_BUCKET)
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
-  cors: (process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:5173').split(','),
+  // Every origin the site is reachable from must be listed, or browser-side fetches
+  // (the Map block's frituur lookup, the Signup POST) get a 200 with no
+  // Access-Control-Allow-Origin and the browser discards the response.
+  // NEXT_PUBLIC_WEB_URL is the origin subdomain; NEXT_PUBLIC_SERVER_URL is the
+  // CDN-fronted client domain the public actually visits.
+  cors: [
+    ...(process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:5173').split(','),
+    ...(process.env.NEXT_PUBLIC_SERVER_URL ? [process.env.NEXT_PUBLIC_SERVER_URL] : []),
+    ...(process.env.NEXT_PUBLIC_ADMIN_URL ? [process.env.NEXT_PUBLIC_ADMIN_URL] : []),
+  ]
+    .map(o => o.trim().replace(/\/$/, ''))
+    .filter((o, i, all) => o && all.indexOf(o) === i),
 
   localization: {
     locales: [
