@@ -141,6 +141,14 @@ services:
 configs:
   nginx_conf:
     content: |
+      # Empty only for requests that did not come through Traefik — i.e. from another
+      # container on the Docker network. A client cannot forge this to empty: Traefik
+      # always appends the real peer IP.
+      map $$http_x_forwarded_for $$external_request {
+          default 1;
+          ""      0;
+      }
+
       server {
           listen 80;
 
@@ -169,16 +177,17 @@ configs:
           # Without this the request falls through to `location /`, the web app's
           # locale hook redirects it, and the collector silently reads HTML forever.
           # Both paths are served: go.d defaults to /stub_status, older configs use
-          # /basic_status. Private networks only — the peer here is the Docker bridge
-          # gateway or another container, never a real client via Traefik.
-          location ~ ^/(stub_status|basic_status)$ {
+          # /basic_status.
+          location ~ ^/(stub_status|basic_status)$$ {
+              # $$remote_addr is useless for access control here: Traefik proxies public
+              # traffic from a private 10.x address too, so an IP allowlist lets the whole
+              # internet in. Anything that reached Traefik carries X-Forwarded-For; a
+              # monitoring agent on the Docker network connects directly and has none.
+              if ($$external_request) {
+                  return 404;
+              }
               stub_status;
               access_log off;
-              allow 127.0.0.1;
-              allow 10.0.0.0/8;
-              allow 172.16.0.0/12;
-              allow 192.168.0.0/16;
-              deny all;
           }
 
           # ── Payload CMS paths ──────────────────────────────────────────────────────
