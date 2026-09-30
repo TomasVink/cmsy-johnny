@@ -130,7 +130,12 @@ services:
     # No ports mapping — Coolify's Traefik routes traffic to this container via labels.
     # Project-specific service name prevents Traefik from merging nginx containers
     # across stacks when multiple projects run on the same Coolify server.
-    labels: {}
+    # Pin Traefik to the shared network. nginx is also on the stack's private
+    # `default` network, which Traefik can't reach; without this Traefik picks
+    # one at random on every config reload (e.g. any other stack's deploy),
+    # causing intermittent 504s with nothing in the nginx logs.
+    labels:
+      - traefik.docker.network=coolify
     expose:
       - '80'
     networks:
