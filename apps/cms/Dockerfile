@@ -1,9 +1,13 @@
 # Build context must be the monorepo root:
 #   docker build -f apps/cms/Dockerfile .
 
-# Builder uses Debian-based bun (glibc) so native binaries (esbuild, sharp, etc.)
-# resolve correctly. The slim runtime uses node:alpine.
-FROM oven/bun:1.3.11 AS builder
+# Next.js 16 runs under Node: Bun (1.3.11 and 1.4.2) can't load its compiled
+# server runtime ("Expected CommonJS module to have a function wrapper").
+# Bun is only used for installing and for bundling the migrations.
+# Builder and runtime are both Debian (glibc) so native binaries like sharp
+# installed here match the runtime.
+FROM node:24-bookworm AS builder
+COPY --from=oven/bun:1.3.11 /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /app
 
 # ── Install dependencies ───────────────────────────────────────────────────────
@@ -39,9 +43,7 @@ RUN for f in src/migrations/[0-9]*.ts; do \
     done
 
 # ── Runtime ───────────────────────────────────────────────────────────────────
-# Run with Bun — the standalone output uses bun's .bun/ node_modules format
-# which Node.js can't resolve but Bun can.
-FROM oven/bun:1.3.11-alpine AS runner
+FROM node:24-bookworm-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -57,4 +59,6 @@ COPY --from=builder /app/apps/cms/src/migrations-compiled ./apps/cms/src/migrati
 EXPOSE 3000
 ENV PORT=3000
 
-CMD ["sh", "-c", "HOSTNAME=0.0.0.0 bun apps/cms/server.js"]
+ENV HOSTNAME=0.0.0.0
+
+CMD ["node", "apps/cms/server.js"]

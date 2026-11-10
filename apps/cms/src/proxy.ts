@@ -16,7 +16,7 @@ import type { NextRequest } from 'next/server'
  * Only runs when LOGTO_APP_ID is present so the local-auth dev experience
  * still works without any Logto configuration.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   if (!process.env.LOGTO_APP_ID) return NextResponse.next()
 
   const { pathname } = request.nextUrl
